@@ -1,0 +1,31 @@
+// MultisensoryAccessibility Plugin
+
+struct ColorBlidnessUSH
+{
+	float3 ColorDeficiency(
+		float3 SourceRGB, 
+		float3 CVDR, float3 CVDG, float3 CVDB, 
+		float3 DALTR, float3 DALTG, float3 DALTB, 
+		float bCorrecting, float bSimulateCorrecting)
+		{
+			float3 DeficientRGB = SourceRGB;
+			float3x3 Mat = float3x3(CVDR, CVDG, CVDB);
+			float3x3 Dalt = float3x3(DALTR, DALTG, DALTB);
+			DeficientRGB = mul(Mat, SourceRGB);
+			float3 OutRGB = DeficientRGB;
+
+			if (bCorrecting == 1)
+			{
+				float3 ErrorRGB = (SourceRGB - DeficientRGB);
+				float3 CorrectionRGB = mul(Dalt, ErrorRGB);
+				OutRGB = SourceRGB + CorrectionRGB;
+		
+				if (bSimulateCorrecting == 1)
+				{
+					OutRGB = mul(Mat, OutRGB);
+				}
+			}
+
+			return OutRGB;
+		}
+};

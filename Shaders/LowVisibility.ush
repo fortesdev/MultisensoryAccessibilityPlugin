@@ -1,0 +1,127 @@
+// MultisensoryAccessibility Plugin
+
+// Based on the HSLS language https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl
+// Unreal definitions: https://github.com/chendi-YU/UnrealEngine/blob/master/Engine/Shaders/Common.usf
+// https://www.kodeco.com/146-unreal-engine-4-cel-shading-tutorial
+
+struct LowVisibilityUSH
+{
+	// SIMPLIFIED COLOR
+	float3 Desaturate(float3 inputColor)
+	{
+    	float gray = dot(inputColor.rgb, float3(0.3, 0.59, 0.11)); //default luminance used to extract to gray
+    	return float4(gray, gray, gray, 1.0);
+	}
+
+	float3 SimplifyColors(
+		float3 ppInput,
+		float3 diffuseColor,
+		float colorThresold)
+		{
+			float3 desaturatedInput = Desaturate(ppInput);
+			float3 desaturatedDiffuse = Desaturate(diffuseColor);
+			float3 dividedDesaturated = float3(desaturatedInput.x / desaturatedDiffuse.x, desaturatedInput.y / desaturatedDiffuse.y, desaturatedInput.z / desaturatedDiffuse.z);
+			dividedDesaturated = clamp(dividedDesaturated, 0, 1); // never exceed the range
+			float3 halvenDiffuse = float3(diffuseColor.x/2, diffuseColor.y/2, diffuseColor.z/2);
+			if (dividedDesaturated.x > colorThresold && dividedDesaturated.y > colorThresold && dividedDesaturated.z > colorThresold) {
+				return diffuseColor;
+			} else {
+				return halvenDiffuse;
+			}
+		}
+
+	// OUTLINE
+	/*
+	First, the texel offset is calculated for each point, then we calculate the depth, then the outlines are incorporated
+	*/
+	float2 texelOffset(
+		float2 inputOffset, 
+		float2 textCoord,
+		float outlineDilationRate,
+		float texelSize)
+	{
+		float dilatedA = inputOffset.x * outlineDilationRate;
+		float dilatedB = inputOffset.y * outlineDilationRate;
+		float2 dilatedOffset = float2(dilatedA, dilatedB);
+		float offsetA = dilatedOffset.x * texelSize;
+		float offsetB = dilatedOffset.y * texelSize;
+		float2 adjustedOffset = float2(offsetA, offsetB);
+		float2 sumOffset = float2(adjustedOffset.x + textCoord.x, adjustedOffset.y + textCoord.y);
+		return sumOffset;
+	}
+
+	float DepthCalculation(
+		float depthA, 
+		float depthB, 
+		float depthC, 
+		float depthD, 
+		float depthZ)
+	{
+		depthZ = depthZ * -4; // balance for the other 4	
+		return abs(depthA + depthB + depthC + depthD + depthZ);
+	}
+
+	float3 DrawOutline(
+		float pixelDepth,
+		float sceneDepth,
+		float outlineDilation,
+		MaterialFloat sceneInputRGB
+	)
+	{
+		// 4,0 is the depth thresold as sum of all coords
+		float cutoff = pixelDepth > 4.0 ? 1.0 : 0.0;
+		// to improve: dilation rate separatedfrom the * 1000 above for better tuning
+		float newAlpha = sceneDepth > outlineDilation * 1000 ? 0.0 : cutoff; // warning: an outline dilation too high may cut the horizon
+		// Alpha is returned to decide if black line is drawn or not
+		return lerp(sceneInputRGB, MaterialFloat4(0.0, 0.0, 0.0, 1.0), newAlpha);
+	}
+
+	float4 nonGaussianBlur(
+		float uv,
+		float3 SceneTexture,
+		float Mask,
+		float BlurStrength
+	)
+	{
+		float3 res = 0;
+
+		//new - get invSize from here
+		float2 invSize = View.ViewSizeAndInvSize.zw;
+
+		//new - we need to fix uv coordinates like this (still seems to be a bug in 4.21)
+		uv = ViewportUVToSceneTextureUV(uv,14);
+
+		int TexIndex = 14;
+		float weights[] =
+		{
+		  0.01, 0.02, 0.04, 0.02, 0.01,
+		  0.02, 0.04, 0.08, 0.04, 0.02,
+		  0.04, 0.08, 0.16, 0.08, 0.04,
+		  0.02, 0.04, 0.08, 0.04, 0.02,
+		  0.01, 0.02, 0.04, 0.02, 0.01
+		};
+		float offsets[] = { -4, -2, 0, 4, 2 };
+
+		if(Mask <= 0.01) return SceneTextureLookup(uv, TexIndex, false);
+
+		uv *= 0.5;
+		for (int i = 0; i < 5; ++i)
+		{
+		  float v = uv.y + offsets[i] * invSize.y * Mask * BlurStrength;
+		  int temp = i * 5;
+		  for (int j = 0; j < 5; ++j)
+		  {
+		    float u = uv.x + offsets[j] * invSize.x * Mask * BlurStrength;
+		    float2 uvShifted = uv + float2(u, v);
+		    float weight = weights[temp + j];
+		    float3 tex = SceneTextureLookup(uvShifted, TexIndex, false);
+		    res += tex * weight;
+		  }
+		}
+
+		return float4(res, 1);
+	}
+};
+
+LowVisibilityUSH lv;
+return lv.DepthCalculation(depthA, depthB, depthC, depthD, depthZ);
