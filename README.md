@@ -2,7 +2,9 @@
 
 ### Aid for hearing loss, low vision, color blindness and epilepsy.
 
-[![Video Title](https://img.youtube.com/vi/BThkBb_bR0w/0.jpg)](https://www.youtube.com/watch?v=BThkBb_bR0w)
+Video demo:
+
+[![Click to see a video demo](https://img.youtube.com/vi/BThkBb_bR0w/0.jpg)](https://www.youtube.com/watch?v=BThkBb_bR0w)
 
 The goal of this plugin is to offer aid for deficiencies and needs currently not existing in Unreal, so developers can help as much players as possible without investing money, in just a few minutes. This includes:
 
@@ -34,11 +36,15 @@ The goal of this plugin is to offer aid for deficiencies and needs currently not
 
 1. You need an UI widget that will display the subtitles, offered through a component provided by the plugin, called MultiSensoryAccessibilityTextBlock. As example, check the SubtitleWidgetBP offered within the plugin's Content/Widgets folder.
 2. Once you have an audio asset imported in your editor, go to its settings and define a subtitle(s) text. This is the constant string that will be completed with dynamic description in real time. The values for the dynamic descriptions (above/below/ahead/from the back, etc.) can be customised and localised by defining the source file for the strings in the variable "ccLocalisedDescriptions" in this component (the file you define needs to exist in your project's Content folder).
+![addSubtitle](https://github.com/user-attachments/assets/4a35b672-4b30-4631-9b72-190abd21b622)
 3. Now you need to have, in your Unreal map, an actor that will be the 3D audio emitter. 
 4. Add to your actor a MultiSensoryAccessibilityAudio component, and convert it to reusable blueprint class with the button for such effect.
+![Screenshot 2025-03-09 at 17 06 03](https://github.com/user-attachments/assets/7cf65aec-a16b-477c-9fa1-b454a6ea4b18)
 5. Once the blueprint class for the actor is open for editing, assign your MultiSensoryAccessibilityAudio componen variable so you have easy access to it.
 6. Decide when and how frequently the dynamic subtitles need to be updated (with the provided blueprint method "Update location based subtitles"). For simplicity, you could update it in every Tick, but keep in mind, too quick updates may be confusing for the player, so perhaps once even half a second or more is better (it depends on how fast your actors will move).
+![Screenshot 2025-03-09 at 17 09 23](https://github.com/user-attachments/assets/05947621-3966-4efe-957e-cd5612eba6dc)
 7. Now, you decide when to create and add or remove (in the viewport) your UI widget for the subtitles. For example, in your map EventBeginPlay.
+![Screenshot 2025-03-09 at 17 09 58](https://github.com/user-attachments/assets/70204307-8a01-4573-be19-e372f5761afa)
 8. The next step is set sounds to your actor and play or stop the audio asset. Dynamic subtitles will be display automatically.
 
 # Low vision aid setup
