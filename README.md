@@ -8,18 +8,18 @@ Video demo:
 
 The goal of this plugin is to offer aid currently not existing in Unreal, so developers can help as much players with deficiencies as possible, without investing money, in just a few minutes. This includes:
 
-1. Hearing aid:
+1. **Hearing aid:**
    - The plugin offers a system for dynamic subtitles, which provides real time spatial information relative to the player: a 3D sound emitter will concatenate its defined subtitle with "getting closer/moving away", "from the right/left", "ahead/behind" and "above/bellow".
    - While not included as part of the plugin (given the external infrastructure needed), we suggest (in the last section "Future Machine Learning improvements") a method for having Audio description using AI: from a static "Gun shot" string, the player will get a more descriptive "Gun shut from the left, behind you, above".
-2. Low vision:
+2. **Low vision:**
    - To cover a wide range of neural or ocular deficiencies, the plugin offers two modes: Enhanced Contrast mode (a variant of cel-shading where unnecessary details are removed, while countours are highlighted), and High Contrast mode, where only the outlines of the monochrome silhouette is offered. All parameters such as highlight colors, depth, etc. can be adjusted in real time for a more refined aid.
    - A "low visibility simulation" mode is offered, for testing the contrast settings while debugging.
-3. Color blidness:
+3. **Color blidness:**
    - While a color blidness help support exists in UE, this plugins enhances its customisastion in the following aspects:
    - Color blidness corrections are applied in a Post-processing volume, instead of the general rendering pipeline. As result, the correction can be applied in the map and not the UI, in specific areas of the level instead of everywhere, and be combined with other shaders, for a more refined aid.
    - Opposite to the built-in help in UE, which offers 10 leves of severity only, the plugin allows a float value and more customisation options.
    - Two correction modes are offered: the common shader solution (more physiologically precise), and also a variant that uses Look-up tables (LUTs), for a more flexible solution (for example, reducing the loss of information if the problematic color patterns are known).
-4. Epilepsy:
+4. **Epilepsy:**
    - The plugin offers an attempt at detecting dangerous blinking, so players affected by epilepsy can be protected. Note that there are inherent risks, and this capability must be used responsibly: as there can be false positives, also false negatives may arise. For instance: different people may be affected by different blinking intervals, and the blinking source may be intermittently hidden by actors during gameplay, affecting calculations.
 
 
@@ -75,26 +75,31 @@ The goal of this plugin is to offer aid currently not existing in Unreal, so dev
 
 # Epilepsy aid setup
 
-1.  Start by adding a MultiSensoryAccessibilityEpilepsy instance to your map. This component includes a scene capture that will try to detect the blinking. You can potentially also include it in your player, by making sure (through code), that the Player's camera is feeding the Scene Capture of the component (simply adding it to your Player blueprint will work, as it needs the correct coordinates).
+1.  Start by adding a *MultiSensoryAccessibilityEpilepsy* instance to your map. This component includes a scene capture that will try to detect the blinking. You can potentially also include it in your player, by making sure (through code), that the Player's camera is feeding the Scene Capture of the component (simply adding it to your Player blueprint will not work, as it needs the correct coordinates). More about this at the end of the section.
 2.  There are a range of parameters you can customise in your Epilepsy aid component:
-   §. The resolution of the capture used for analysis. The higher the more precise, but also more expensive (captures are analyses between each frame)
-   1. The field of view of the capture (ideally equal to your game's settings).
-   2. The max amount of blinks per second. While under 5 is considered safe for most people, a conservative 3 is recommended.
-   4. Screen fragment to check. This is the portion of the screen that must change in order for a blink to be considered dangerous. Default value is 5, which means, a blink in a fifth of the screen will trigger the recognition, while value 1 is the whole screen.
-![Screenshot 2025-03-09 at 17 14 47](https://github.com/user-attachments/assets/1b808459-2a8c-4500-87e6-0a4313a64e52)
-3. Use the delegate method call to know when a blinking is happening, and when it has stopped - you are free to inform the user, or preferibly, blocked the dangerous view from the screen.
-![Screenshot 2025-03-09 at 17 14 22](https://github.com/user-attachments/assets/75a7d1ec-b43d-4862-b8c2-595cf953157a)
-4. Important: Please ensure a deep testing before including this Epilepsy aid, warning the user about it. While false positives cause no harm, false negatives may happen for example due to actors, or even a third person character, intermittently blocking the light source of the blinking. This is one of the reasons the scene capture component is originally meant to be used statically in the map: as part of a player, linked to its moving camera, can be hard to tune in fast pacing games. It is better to aim it to the "potentially hazardous" scenes instead. 
+   §. The resolution of the capture used for analysis. The higher the more precise, but also more expensive (screen captures are analysed between each frame)
+   1. The field of view of the capture (ideally equal to your game's).
+   2. The max amount of blinks per second allowed . While under 5 is considered safe for most people, a conservative 3 is recommended.
+   4. Screen fragment to check. This is the portion of the screen that must change in order for a blink to be considered dangerous. Default value is 5, which means, a blink in a fifth of the screen will trigger the recognition, while value 1 is the whole screen. Smaller the better protection, but the easier for false negatives to happen.
+      
+ ![Screenshot 2025-03-09 at 17 14 47](https://github.com/user-attachments/assets/1b808459-2a8c-4500-87e6-0a4313a64e52)
+
+3. Use the delegate method call of *MultiSensoryAccessibilityEpilepsy* to know when a blinking is happening in run time (or the blinking has stopped). You are free to inform the user, or preferibly, blocked the dangerous view from the screen.
+
+ ![Screenshot 2025-03-09 at 17 14 22](https://github.com/user-attachments/assets/75a7d1ec-b43d-4862-b8c2-595cf953157a)
+
+4. **Important**: please ensure a deep testing before including this Epilepsy aid, and warning the user about it. While false positives cause no harm, false negatives may happen for example due to actors, or even a third person player's mesh, intermittently blocking the light source of the blinking. This is one of the reasons the scene capture component is originally meant to be used statically in the map: as part of a player, linked to its moving camera, can increase errors, for example in fast pacing games. It is better to aim to "potentially hazardous" areas for as long as possible so the pixel calculations are not corrupted by movement. 
 
 # Future Machine Learning improvements
 
-Some other solutions were studied while preparing this plugin, that are not included as they required extra infrastructue (and this plugin is meant to be standalone and offline). These solutions are:
+Some other solutions were studied while preparing this plugin, that are not included as they required extra infrastructure (and this plugin is meant to be standalone and offline). These solutions are:
 
-1. Automatic Audio Descriptions. 
-Google offers a decent [AI Audio Classifier](https://ai.google.dev/edge/mediapipe/solutions/audio/audio_classifier), in python, javascript and Android. Fortunately, Unreal UI Widget can load web components, so you can host a web service that receives the audio (or an audio stream) and returns the classifications as a list of probabilities. This is available as of now, as seen in the video example at the beginning of the page, but there are a couple of solvable problems you need to keep in mind:
-   a. Google's classification model has a tendency to filter background noise. This may be a problem for atmospheric and quiet games/situations, as important low volume sounds will be completely ignored. A new model would have to be trained for such specific situations.
-   b. The AI model is also very indicesive, changing its mind in fractions of a second, which can make tricky to offer a stable UI, readable for the player. This can be perhaps even harder in a model that does not filter background noises.
-   c. If you decide not to send static audios, but instead the mix of the audio from the game, you'll find out the only way to allow this through web in Unreal is using the microphone. But the web component in Unreal doesn't offer CEF (Chromium Experiment Features), so the microphone permissions cannot be changed to enabled. Fortunately, there are (paid) Unreal web plugins out there that offers them.
+1. **Automatic Audio Descriptions**:
+Google offers a decent [AI Audio Classifier](https://ai.google.dev/edge/mediapipe/solutions/audio/audio_classifier). You can host a web service that loads this model, access the web service in an Unreal's web widget, present it in your game UI, and send audio files or an audio stream to it. Your web service can then return a webpage with the classifications as a list of probabilities, to be listed in the user interface. This is feasible as of now, as seen in the video example at the beginning of the page, but there are a few (solvable) problems you need to keep in mind:
+   1. Google's classification model has a tendency to filter background noise. This may be a problem for atmospheric and quiet games/situations, as important low volume sounds may be completely ignored. A new model would have to be trained for such specific situations.
+   2. The AI model is also very indecisive, changing its mind in fractions of a second, which can make tricky to offer a stable UI, readable for the player. This can be perhaps even harder in a model that does not filter background noises.
+   3. If you decide not to send static audios, but instead the mix of the audio from the game, you'll find out the only way to allow this through web in Unreal is using the microphone. But Unreal's default web component doesn't offer CEF (Chromium Experiment Features), so the microphone permissions cannot be changed to enabled it. Fortunately, there are (paid) Unreal web plugins out there that offers them.
 
-2. Fast Neural Style Transfer
-There is an official Neural Renderer plugin in UE5 that allows using ONNX models in post processing materials. For example those offered [here](https://github.com/onnx/models/tree/main/validated/vision/style_transfer/fast_neural_style), as seen in the video. While giving a glipmse of future capabilities, this is currently an experimental feature that cannot be deployed in production (the packaging of your project will fail if you attempt to use it), and that is currently stuck in old versions of ONNX and Pytorch.
+2. **Fast Neural Style Transfer**:
+
+There is an official Neural Renderer plugin in UE5 that allows using ONNX models in post processing materials. For example those offered [here](https://github.com/onnx/models/tree/main/validated/vision/style_transfer/fast_neural_style). While giving a glipmse of future capabilities, this is currently an experimental feature that cannot be deployed in production (the packaging of your project will fail if you attempt to do so). Also, you'll have to train in old version of PyTorch, then convert to ONNX, with potential incompatibility issues. While interesting technologycally, it is not a recommended alternative to the shaders provided by the plugin, given the low performance and quality in execution.
