@@ -32,7 +32,7 @@ The goal of this plugin is to offer aid for deficiencies and needs currently not
 # Dynamic subtitles setup
 
 1. You need an UI widget that will display the subtitles, offered through a component provided by the plugin, called MultiSensoryAccessibilityTextBlock. As example, check the SubtitleWidgetBP offered within the plugin's Content/Widgets folder.
-2. Once you have an audio asset imported in your editor, go to its settings and define a subtitle(s) text. This is the constant string that will be completed with dynamic description in real time.
+2. Once you have an audio asset imported in your editor, go to its settings and define a subtitle(s) text. This is the constant string that will be completed with dynamic description in real time. The values for the dynamic descriptions (above/below/ahead/from the back, etc.) can be customised and localised by defining the source file for the strings in the variable "ccLocalisedDescriptions" in this component.
 3. Now you need to have, in your Unreal map, an actor that will be the 3D audio emitter. 
 4. Add to your actor a MultiSensoryAccessibilityAudio component, and convert it to reusable blueprint class with the button for such effect.
 5. Once the blueprint class for the actor is open for editing, assign your MultiSensoryAccessibilityAudio componen variable so you have easy access to it.
