@@ -75,4 +75,12 @@ The goal of this plugin is to offer aid for deficiencies and needs currently not
 # Future Machine Learning improvements
 
 Some other solutions were studied while preparing this plugin, that are not included as they required extra infrastructue (and this plugin is meant to be standalone and offline). These solutions are:
-1. Audio Descriptions. 
+
+1. Automatic Audio Descriptions. 
+Google offers a decent [AI Audio Classifier](https://ai.google.dev/edge/mediapipe/solutions/audio/audio_classifier), in python, javascript and Android. Fortunately, Unreal UI Widget can load web components, so you can host a web service that receives the audio (or an audio stream) and returns the classifications as a list of probabilities. This is available as of now, as seen in the video example at the beginning of the page, but there are a couple of solvable problems you need to keep in mind:
+   a. Google's classification model has a tendency to filter background noise. This may be a problem for atmospheric and quiet games/situations, as important low volume sounds will be completely ignored. A new model would have to be trained for such specific situations.
+   b. The AI model is also very indicesive, changing its mind in fractions of a second, which can make tricky to offer a stable UI, readable for the player. This can be perhaps even harder in a model that does not filter background noises.
+   c. If you decide not to send static audios, but instead the mix of the audio from the game, you'll find out the only way to allow this through web in Unreal is using the microphone. But the web component in Unreal doesn't offer CEF (Chromium Experiment Features), so the microphone permissions cannot be changed to enabled. Fortunately, there are (paid) Unreal web plugins out there that offers them.
+
+2. Fast Neural Style Transfer
+There is an official Neural Renderer plugin in UE5 that allows using ONNX models in post processing materials. For example those offered [here](https://github.com/onnx/models/tree/main/validated/vision/style_transfer/fast_neural_style), as seen in the video. While giving a glipmse of future capabilities, this is currently an experimental feature that cannot be deployed in production (the packaging of your project will fail if you attempt to use it), and that is currently stuck in old versions of ONNX and Pytorch.
