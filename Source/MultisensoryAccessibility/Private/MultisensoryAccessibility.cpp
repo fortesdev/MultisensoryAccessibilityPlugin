@@ -1,35 +1,21 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+/* 
+	Multi-sensory Accessibility Plugin for UE5
+ 	Copyright 2025, Francisco Fortes
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+You may obtain a copy of the License at: http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and limitations under the License.
+*/
 
 #include "MultisensoryAccessibility.h"
 #include "Modules/ModuleManager.h"
 #include "Interfaces/IPluginManager.h"
 #include "Logging/LogMacros.h"
-#include "Misc/Paths.h" // include this!
+#include "Misc/Paths.h"
 
 #define LOCTEXT_NAMESPACE "FMultisensoryAccessibilityModule"
-
-//void FMultisensoryAccessibilityModule::StartupModule()
-//{
-//	FString ShaderDirectory = FPaths::Combine(FPaths::ProjectDir(), TEXT("Shaders")); 
-//	UE_LOG(LogTemp, Warning, TEXT("This is the ShaderDirectory: %s"), *FString(ShaderDirectory));	
-//	AddShaderSourceDirectoryMapping("/Project", ShaderDirectory);
-// #if WITH_EDITOR
-
-// #endif // #if WITH_EDITOR
-//}
-
-//void FMultisensoryAccessibilityModule::ShutdownModule()
-//{
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
-//}
-
 #undef LOCTEXT_NAMESPACE
 	
-IMPLEMENT_MODULE(FMultisensoryAccessibilityModule, MultisensoryAccessibility) // Eso rompe algo???
-// #if WITH_EDITOR
-// IMPLEMENT_PRIMARY_GAME_MODULE(FMultisensoryAccessibilityModule, Project, "Project"); // edit this!
-// #else
-// IMPLEMENT_MODULE(FMultisensoryAccessibilityModule, MultisensoryAccessibility)
-// #endif // #if WITH_EDITOR
-// pueda apuntar a ush en el plugin https://viclw17.github.io/2022/02/01/unreal-engine-custom-node
+IMPLEMENT_MODULE(FMultisensoryAccessibilityModule, MultisensoryAccessibility)

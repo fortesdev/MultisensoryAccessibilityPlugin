@@ -1,4 +1,13 @@
-// Some copyright should be here...
+/* 
+	Multi-sensory Accessibility Plugin for UE5
+ 	Copyright 2025, Francisco Fortes
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+You may obtain a copy of the License at: http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and limitations under the License.
+*/
 
 using UnrealBuildTool;
 
@@ -10,14 +19,14 @@ public class MultisensoryAccessibility : ModuleRules
 		
 		PublicIncludePaths.AddRange(
 			new string[] {
-				// ... add public include paths required here ...
+				// ...	
 			}
 			);
 				
 		
 		PrivateIncludePaths.AddRange(
 			new string[] {
-				// ... add other private include paths required here ...
+				// ...
 			}
 			);
 			
@@ -25,14 +34,13 @@ public class MultisensoryAccessibility : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				 "Core",
-				 "CoreUObject",
-             "RenderCore",
-             "InputCore",
-             "Engine",
-	     "UMG",
-             // "ShaderCore",
-             "RHI",
+				"Core",
+				"CoreUObject",
+             	"RenderCore",
+             	"InputCore",
+             	"Engine",
+	     		"UMG",
+             	"RHI",
 			}
 			);
 			
@@ -46,20 +54,21 @@ public class MultisensoryAccessibility : ModuleRules
 				"Projects",
 				"RenderCore",
 				"UMG",
-				// ... add private dependencies that you statically link with here ...	
+				// ... 	
 			}
 			);
 		
 		if (Target.bBuildEditor)
 		{
-		    PrivateDependencyModuleNames.AddRange(new string[]{"UnrealEd", "MaterialEditor"}); // OJO Estas son dependencias para acceder a los operadores de actores/PP, etc.
-		} // Necesitan incluirse solo cuando esta presente el editor porque si no fallaria el packaging para production
+			// Modules forbidden in production/packaging
+		    PrivateDependencyModuleNames.AddRange(new string[]{"UnrealEd", "MaterialEditor"}); 
+		} 
 
 		
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]
 			{
-				// ... add any modules that your module loads dynamically here ...
+				// ... 
 			}
 			);
 	}

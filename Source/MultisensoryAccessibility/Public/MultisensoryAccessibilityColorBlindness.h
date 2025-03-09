@@ -1,10 +1,19 @@
 
+/* 
+	Multi-sensory Accessibility Plugin for UE5
+ 	Copyright 2025, Francisco Fortes
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+You may obtain a copy of the License at: http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and limitations under the License.
+*/
 
 #pragma once
 
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "MultisensoryAccessibilityPPVolume.h"
-
 
 UENUM(BlueprintType)
 enum class EAffectedColorCone : uint8
@@ -30,7 +39,41 @@ enum class EColorBlindMode : uint8
 	Correct UMETA(DisplayName="Corrects"),
 };
 
-// Explicar como se han calculado estos valores, mencionando nombres etc
+class UMultisensoryAccessibilityColorBlindness
+{
+
+public:
+
+	static float ColorBlindnessLUTHandling(
+		EAffectedColorCone Cone, 
+		AMultisensoryAccessibilityPPVolume* Volume,
+		UMaterialParameterCollection* Collection,
+		EColorBlindMode mode,
+		float strength); 
+
+
+    static float ColorBlindnessShaderHandling(
+		EAffectedColorCone Cone, 
+		AMultisensoryAccessibilityPPVolume* Volume,
+		UMaterialParameterCollection* Collection,
+		EColorBlindMode mode,
+		float strength); 
+
+private:
+
+	static TArray<float> getCVDTable(
+		EAffectedColorCone Cone,
+		float strength);
+	static float interpolate(
+		float low, 
+		float high, 
+		float weigth);
+	static FLinearColor getDALTColor(
+		int32 row,
+		EAffectedColorCone Cone);
+};
+
+// Values taken from pag 74 in https://lume.ufrgs.br/bitstream/handle/10183/26950/000761444.pdf;jsessionid=EA5AD56D1DC45C8FC9186FACA6B1CBF3?sequence=1
 static const TArray<float> ProtanopeCVDTable = // [11 * 3]
 {
 	// Severity - 0
@@ -201,38 +244,4 @@ static const TArray<float> MDALTB =
 	0.5, 0.5, 0.5,
 	0.5, 0.5, 0.5,
 	1.0, 1.0, 0.5
-};
-
-class UMultisensoryAccessibilityColorBlindness
-{
-
-public:
-
-	static float ColorBlindnessLUTHandling(
-		EAffectedColorCone Cone, 
-		AMultisensoryAccessibilityPPVolume* Volume,
-		UMaterialParameterCollection* Collection,
-		EColorBlindMode mode,
-		float strength); 
-
-
-    static float ColorBlindnessShaderHandling(
-		EAffectedColorCone Cone, 
-		AMultisensoryAccessibilityPPVolume* Volume,
-		UMaterialParameterCollection* Collection,
-		EColorBlindMode mode,
-		float strength); 
-
-private:
-
-	static TArray<float> getCVDTable(
-		EAffectedColorCone Cone,
-		float strength);
-	static float interpolate(
-		float low, 
-		float high, 
-		float weigth);
-	static FLinearColor getDALTColor(
-		int32 row,
-		EAffectedColorCone Cone);
 };

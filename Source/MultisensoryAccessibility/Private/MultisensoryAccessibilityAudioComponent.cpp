@@ -1,4 +1,13 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+/* 
+	Multi-sensory Accessibility Plugin for UE5
+ 	Copyright 2025, Francisco Fortes
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+You may obtain a copy of the License at: http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and limitations under the License.
+*/
 
 #include "MultisensoryAccessibilityAudioComponent.h"
 #include "Components/AudioComponent.h"
@@ -17,13 +26,15 @@ void UMultisensoryAccessibilityAudioComponent::updateSubtitles()
 	int32 currentMs = FDateTime::UtcNow().GetMillisecond();
     int32 adjustedCurrentMs = currentMs >= startingMeasurementMs ? currentMs : startingMeasurementMs + currentMs;
 	
-	if ((adjustedCurrentMs - startingMeasurementMs) >= 200) { // 1000ms / 5 (to measure until 5 position changes per second)
+	if ((adjustedCurrentMs - startingMeasurementMs) >= 200) 
+	{ // (= 1000ms / 5) in order to measure 5 times per second
 		startingMeasurementMs = currentMs;
 		FSubtitleCue subtitle = FSubtitleCue();
 		FText someText = FText::GetEmpty();
-		if (GetPlayState() == EAudioComponentPlayState::Playing) { 
-		/* It is responsibility of the BP to stop this method, not for us to check the state before broadcasting:
-		 the reason is, we need to send empty once stops playing */
+		if (GetPlayState() == EAudioComponentPlayState::Playing) 
+		{ 
+		/* It is responsibility of the BP to stop this method, not for the plugin to check the state before broadcasting. Reason is, 
+		we need to send empty once stops playing */
 			someText = getLocationBasedSubtitlesText();
 		} 
 
@@ -59,7 +70,8 @@ FText UMultisensoryAccessibilityAudioComponent::getLocationBasedSubtitlesText()
 		FString yString = yPos > 0 ? ccFromTheRight : yPos < 0 ? ccFromTheLeft : emptyString;
 		FString xString = xPos > 0 ? ccAhead : xPos < 0 ? ccBehind : emptyString;
 		// Format: "Actor_Subtitle {getting closer/moving away} {ahead/behind}, {bellow/above} {from the right/left}" 		
-		if (direction != 0) {
+		if (direction != 0) 
+		{
 			locationText = FText::FromString(directionString);
 		}
 		locationText = appendFormatted(locationText, FText::FromString(xString), FText::FromString(emptyString));
@@ -71,20 +83,23 @@ FText UMultisensoryAccessibilityAudioComponent::getLocationBasedSubtitlesText()
 	return locationText;
 }
 
-FText UMultisensoryAccessibilityAudioComponent::appendFormatted(FText currentText, FText newText, FText separator) {
+FText UMultisensoryAccessibilityAudioComponent::appendFormatted(FText currentText, FText newText, FText separator) 
+{
 	return currentText.ToString().Len() == 0 ? newText :
 		newText.ToString().Len() == 0 ? currentText :
 		FText::Format(LOCTEXT("Subtitle", "{0}{1} {2}"), currentText, separator, newText);
 }
 
-int16 UMultisensoryAccessibilityAudioComponent::relativePos(int16 coord) {
-	/* This method returns, for a given coordinate, if the other object is in relative positive position (front, bellow, to the right), viceversa, 
-	or too small of different to tell (compared to the threshold constant), in which case the value returned is zero. */
+int16 UMultisensoryAccessibilityAudioComponent::relativePos(int16 coord) 
+{
+	/* This method compares, for a given coordinate, other object's relative positive, against a threshold. Zero means, difference is 
+	too small and can be ignored. Positive or negative indicates front vs back, above vs below, left vs right, etc */
 	return coord > kDistanceThreshold ? 1 : 
 		   coord < -kDistanceThreshold ? -1 : 0;
 }
 
-int16 UMultisensoryAccessibilityAudioComponent::deltaPosChange(FVector actorLocation) {
+int16 UMultisensoryAccessibilityAudioComponent::deltaPosChange(FVector actorLocation) 
+{
 	FVector playerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 	int16 newDistance = FVector::Dist(playerLocation, actorLocation);
 	int16 difference = newDistance - previousDistance;
@@ -92,12 +107,14 @@ int16 UMultisensoryAccessibilityAudioComponent::deltaPosChange(FVector actorLoca
 	return relativePos(difference);
 }
 
-void UMultisensoryAccessibilityAudioComponent::preloadConstants() {
+void UMultisensoryAccessibilityAudioComponent::preloadConstants() 
+{
 	FString file = FPaths::ProjectContentDir();
-	file.Append(ccLocalisedDescriptions);//TEXT("positionsCCSubtitlesEN.srt"));
+	file.Append(ccLocalisedDescriptions); // TEXT("positionsCCSubtitlesEN.srt"));
 	IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
 	FString Content;
-	if (FileManager.FileExists(*file)) {
+	if (FileManager.FileExists(*file)) 
+	{
 	    if(FFileHelper::LoadFileToString(Content ,*file, FFileHelper::EHashOptions::None))
 	    {
 			TArray<FString>* SrtLines = new TArray<FString>();

@@ -1,4 +1,13 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+/* 
+	Multi-sensory Accessibility Plugin for UE5
+ 	Copyright 2025, Francisco Fortes
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+You may obtain a copy of the License at: http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and limitations under the License.
+*/
 
 #include "MultisensoryAccessibilityColorBlindness.h"
 #include "MultisensoryAccessibility.h"
@@ -10,7 +19,6 @@
 #include "UObject/UnrealType.h"
 #include <string>
 #include "Materials/MaterialExpression.h"
-
 #include "Misc/Paths.h"
 #include "Misc/FileHelper.h"
 #include "Interfaces/IPluginManager.h"
@@ -26,19 +34,22 @@ float UMultisensoryAccessibilityColorBlindness::ColorBlindnessLUTHandling(
 {
 	UE_LOG(LogTemp, Warning, TEXT("Enters ColorBlindnessLUTHandling"));
 	AMultisensoryAccessibilityPPVolume* _postProcessVolume = Volume;
- 	if (_postProcessVolume == nullptr) {
+ 	if (_postProcessVolume == nullptr) 
+	{
 		_postProcessVolume = AMultisensoryAccessibilityPPVolume::getOrCreateVolume();
-		if (_postProcessVolume == nullptr) {
+		if (_postProcessVolume == nullptr) 
+		{
 			UE_LOG(LogTemp, Warning, TEXT("AMultisensoryAccessibilityPPVolume not provided, plugin cannot work without it"));	
 			return -1;
 		}
 	}
-	// Desactivamos, en caso de existir, cualquier definicion de dicromacia en el material de post procesado
+	// we deactivate, if found, any dichromatic definition in the post processing material
 	if (Collection)
 	{
 		UWorld* world = GEngine->GameViewport->GetWorld();
 		UMaterialParameterCollectionInstance* MCInstance = world->GetParameterCollectionInstance(Collection);
-		if (MCInstance) {
+		if (MCInstance) 
+		{
             UE_LOG(LogTemp, Warning, TEXT("MSColorBlindnessMaterial - Material collection found!"));
 			FString ParamString = "ColorVisionDeficiencyType";
 			FName ParamName = FName(*ParamString);
@@ -52,7 +63,7 @@ float UMultisensoryAccessibilityColorBlindness::ColorBlindnessLUTHandling(
 	{
 		case EAffectedColorCone::None:
 			UE_LOG(LogTemp, Warning, TEXT("Cone NONE"));
-			_postProcessVolume->Settings.bOverride_ColorGradingIntensity = 0; // Desactivamos cualquier uso de LUTs anterior
+			_postProcessVolume->Settings.bOverride_ColorGradingIntensity = 0; // Deactivate any previous LUT definitionr
 			_postProcessVolume->Settings.bOverride_ColorGradingLUT = 0;
 			return -1;
 			break;
@@ -94,14 +105,14 @@ float UMultisensoryAccessibilityColorBlindness::ColorBlindnessLUTHandling(
 	texturePath += "'";
 
 	UE_LOG(LogTemp, Log, TEXT("LUT texture path: %s"), *texturePath);
-	UTexture* ColorBlindTexture = LoadObject<UTexture>(nullptr, *texturePath); // * necesita parentesis!
+	UTexture* ColorBlindTexture = LoadObject<UTexture>(nullptr, *texturePath);
 	// A reference to a texture is constructed with systemPath+'local path+filename.filename', example:
 	// "/Script/Engine.Texture2D'/MultisensoryAccessibility/LUTs/tritanope_simulate_lut.tritanope_simulate_lut'"
 
-	if (ColorBlindTexture) {
+	if (ColorBlindTexture) 
+	{
 		UE_LOG(LogTemp, Warning, TEXT("MSColorBlindness - LUT texture found!"));
-		// NO USAR FPostProcessSettings ppSettings = _postProcessVolume->Settings; pues crea una copia, y no usa el puntero real!!
-		// We allow overriding the values
+		// Beware, FPostProcessSettings ppSettings = _postProcessVolume->Settings creates a copy instead of using the pointer reference
 		_postProcessVolume->Settings.bOverride_ColorGradingIntensity = 1;
 		_postProcessVolume->Settings.bOverride_ColorGradingLUT = 1;
 		// Look up table texture to use
@@ -109,7 +120,8 @@ float UMultisensoryAccessibilityColorBlindness::ColorBlindnessLUTHandling(
 		// Color grading lookup table intensity. 0 = no intensity, 1=full intensity 
 		_postProcessVolume->Settings.ColorGradingIntensity = strength * 0.7; // Strenght affects very drastically LUT, so we reduce to 60% compare to shader result
 
-	} else {
+	} else 
+	{
 		UE_LOG(LogTemp, Warning, TEXT("MSColorBlindness - LUT texture NOT found!"));
 	}
 //	UE_LOG(LogTemp, Warning, TEXT("This is the ColorGradingLUT: %s"), *FString(pathPlugin));	
@@ -133,34 +145,32 @@ float UMultisensoryAccessibilityColorBlindness::ColorBlindnessShaderHandling(
 		}
 	}
 
-	_postProcessVolume->Settings.bOverride_ColorGradingIntensity = 0; // Desactivamos cualquier uso de LUTs anterior
+	_postProcessVolume->Settings.bOverride_ColorGradingIntensity = 0; 
 	_postProcessVolume->Settings.bOverride_ColorGradingLUT = 0;
 	
 	_postProcessVolume->Settings.WeightedBlendables.Array.Empty();
-//	if (_postProcessVolume->Settings.WeightedBlendables.Array.Num() == 0) // Y si necesitamos mas materiales, que hacer?
-//	{
-		// Logging example https://rodneylab.com/ue5-c++-logging/
-		UE_LOG(LogTemp, Warning, TEXT("AMultisensoryAccessibilityPPVolume found has no material, need to assign it"));	
-		//ppSettings.WeightedBlendables.Array.Empty();
+
+	UE_LOG(LogTemp, Warning, TEXT("AMultisensoryAccessibilityPPVolume found has no material, need to assign it"));	
 	
-		UMaterial* ColorBlindMaterial = LoadObject<UMaterial>(nullptr, 
-		TEXT("Material/Script/Engine.Material'/MultisensoryAccessibility/MSColorBlindnessMaterial.MSColorBlindnessMaterial'")); 
-		// Este path arriba se obtiene copiando la referencia en el UE editor. Ojo que el material debe existir en su visor de contenidos!!!
-		if (ColorBlindMaterial)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("MSColorBlindnessMaterial.Succeeded()"));
-		} else {
-			UE_LOG(LogTemp, Warning, TEXT("MSColorBlindnessMaterial.Succeeded() NOPE"));
-			return -1;
-		}
-		_postProcessVolume->setMaterial(ColorBlindMaterial, 1.0);
-//	}
-	// Cambiamos los valores del material collection segun lo recibido
+	UMaterial* ColorBlindMaterial = LoadObject<UMaterial>(nullptr, 
+	TEXT("Material/Script/Engine.Material'/MultisensoryAccessibility/MSColorBlindnessMaterial.MSColorBlindnessMaterial'")); 
+		
+	if (ColorBlindMaterial)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MSColorBlindnessMaterial.Succeeded()"));
+	} else {
+		UE_LOG(LogTemp, Warning, TEXT("MSColorBlindnessMaterial.Succeeded() NOPE"));
+		return -1;
+	}
+	_postProcessVolume->setMaterial(ColorBlindMaterial, 1.0);
+
+	// We change values based on the MaterialCollection received
 	if (Collection)
 	{
 	 	UWorld* world = GEngine->GameViewport->GetWorld();
 		UMaterialParameterCollectionInstance* MCInstance = world->GetParameterCollectionInstance(Collection);
-		if (MCInstance) {
+		if (MCInstance) 
+		{
             UE_LOG(LogTemp, Warning, TEXT("MSColorBlindnessMaterial - Material collection found!"));
             switch (mode)
 	        {
@@ -188,7 +198,7 @@ float UMultisensoryAccessibilityColorBlindness::ColorBlindnessShaderHandling(
 			FLinearColor DALTR = UMultisensoryAccessibilityColorBlindness::getDALTColor(0, Cone);
 			FLinearColor DALTG = UMultisensoryAccessibilityColorBlindness::getDALTColor(1, Cone);
 			FLinearColor DALTB = UMultisensoryAccessibilityColorBlindness::getDALTColor(2, Cone);
-			// FLinearColor es un vector en el material collection, pasado como parametro array al material
+			// The FLinearColors are vectors, within the MaterialCollection, used as inputs for the post processing material
 			MCInstance->SetVectorParameterValue(FName(*FString("CVDR")), CVDR);
 			MCInstance->SetVectorParameterValue(FName(*FString("CVDG")), CVDG);
 			MCInstance->SetVectorParameterValue(FName(*FString("CVDB")), CVDB);
@@ -228,7 +238,7 @@ float UMultisensoryAccessibilityColorBlindness::interpolate(float low, float hig
 	if (weigth == 0.0) {
 		return low;
 	} else {
-		// Interpolacion con peso = A + ((B – A) * w)
+		// Interpolation with weight = A + ((B – A) * w)
 		UE_LOG(LogTemp, Log, TEXT("A: %f B %f w %f"), low, high, weigth);
 		return low + (high - low) * weigth;		
 	}
@@ -250,8 +260,7 @@ TArray<float> UMultisensoryAccessibilityColorBlindness::getCVDTable(
 	UE_LOG(LogTemp, Log, TEXT("We got strength: %f intStrength %i weigth %f"), strength, intStrength, weigth);
 	int32 indexTable = size * intStrength;
 	TArray<float> table;
-	// Hack para tomar un subarray de otro array: con [startIndex],size			TArray<float> CVDR = TArray<float>(&MatrixCVD.GetData()[0],3);
-
+	// Hack to extract a subarray from another array, with [startIndex], size TArray<float> CVDR = TArray<float>(&MatrixCVD.GetData()[0],3);
 	for (int i = indexTable; i<indexTable + size; i++) 
 	{
 		switch (Cone)
