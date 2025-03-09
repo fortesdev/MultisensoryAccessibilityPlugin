@@ -50,6 +50,7 @@ The goal of this plugin is to offer aid for deficiencies and needs currently not
 # Low vision aid setup
 
 1. Start by adding one (or more) MultiSensoryAccessibilityPPVolume. Decide if you want the visual aids to be applied only within this Post-processing volume, or to the whole map, by keeping disabled, or enabling "Infinite Extend (unbound)" in the volume settings.
+![Screenshot 2025-03-09 at 17 12 45](https://github.com/user-attachments/assets/f07fe786-953c-4ab9-8d19-fbb68b4ff0d2)
 2. All low vision changes are applied through a common blueprint method provided, called "Increase of color, contrast and vision within a volume". This volume is injected with the folloring required parameters:
    a. An instance of MultiSensoryAccessibilityPPVolume, that we created previously.
    b. An instance to a MSMaterialParameter. This is a set of constant definitions used by the shaders. We provide one ready to use in the plugin's Content folder, but you can edit it and/or create your own. Some example of the constants are color thresolds, outline growth rate, and more. Keep in mind this file is shared with Color blindness aid.
@@ -57,6 +58,8 @@ The goal of this plugin is to offer aid for deficiencies and needs currently not
    d. An outline color. We recommend light outline color in dark objects or over dark backgrounds, and viceversa. Remember you can change all this parameters in real time.
    e. An outline "Strenght" value. This will determine how thick the outlines are, customisable in real time.
    f. A bool for simulating low vision while debugging, for testing your implementation.
+ ![Screenshot 2025-03-09 at 17 13 19](https://github.com/user-attachments/assets/a25d3937-ca1d-446a-8fe1-934694d0c60d)
+
 
 # Color blindness aid setup
 
@@ -68,6 +71,7 @@ The goal of this plugin is to offer aid for deficiencies and needs currently not
    d. The color technique used for the aid. One is Shaders, very biologically precise, but strict and lacking contrast. The second is using LUTs (Look-up tables), that allows a more refined and artistic definition. We recommend using shaders, unless you use your own LUT definitions.
    e. The mode of aid. You can Simulate (to see how a color blind person see), Simulate Corrected (to see the correction as a color blidness person), and Correct, which should be the mode applied in production with the aid enabled.
    f. The strenght or of the aid (bigger the more affected a color cone is)
+![Screenshot 2025-03-09 at 17 14 00](https://github.com/user-attachments/assets/0c174c80-4503-40ba-b01f-a038bc5f677e)
 
 # Epilepsy aid setup
 
@@ -76,8 +80,11 @@ The goal of this plugin is to offer aid for deficiencies and needs currently not
    a. The resolution of the capture used for analysis. The higher the more precise, but also more expensive (captures are analyses between each frame)
    b. The field of view of the capture (ideally equal to your game's settings).
    c. The max amount of blinks per second. While under 5 is considered safe for most people, a conservative 3 is recommended.
-   d. Screen fragment to check. This is the portion of the screen that must change in order for a blink to be considered dangerous. Default value is 5, which means, a blink in a fifth of the screen will trigger the recognition, while value 1 is the whole screen. 
-3. Important: Please ensure a deep testing before including this Epilepsy aid, warning the user about it. While false positives cause no harm, false negatives may happen for example due to actors, or even a third person character, intermittently blocking the light source of the blinking. This is one of the reasons the scene capture component is originally meant to be used statically in the map: as part of a player, linked to its moving camera, can be hard to tune in fast pacing games. It is better to aim it to the "potentially hazardous" scenes instead. 
+   d. Screen fragment to check. This is the portion of the screen that must change in order for a blink to be considered dangerous. Default value is 5, which means, a blink in a fifth of the screen will trigger the recognition, while value 1 is the whole screen.
+![Screenshot 2025-03-09 at 17 14 47](https://github.com/user-attachments/assets/1b808459-2a8c-4500-87e6-0a4313a64e52)
+3. Use the delegate method call to know when a blinking is happening, and when it has stopped - you are free to inform the user, or preferibly, blocked the dangerous view from the screen.
+![Screenshot 2025-03-09 at 17 14 22](https://github.com/user-attachments/assets/75a7d1ec-b43d-4862-b8c2-595cf953157a)
+4. Important: Please ensure a deep testing before including this Epilepsy aid, warning the user about it. While false positives cause no harm, false negatives may happen for example due to actors, or even a third person character, intermittently blocking the light source of the blinking. This is one of the reasons the scene capture component is originally meant to be used statically in the map: as part of a player, linked to its moving camera, can be hard to tune in fast pacing games. It is better to aim it to the "potentially hazardous" scenes instead. 
 
 # Future Machine Learning improvements
 
