@@ -1,4 +1,4 @@
-# Multi Sensory Accessibility Plugin for Unreal Engine 5
+# Multi-sensory Accessibility Plugin for Unreal Engine 5
 
 ### Aid for hearing loss, low vision, color blindness and epilepsy.
 
