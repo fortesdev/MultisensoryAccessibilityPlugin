@@ -27,12 +27,13 @@ The goal of this plugin is to offer aid for deficiencies and needs currently not
 2. Create a folder "Plugins" in the root of your project.
 3. Copy the Multi-sensory Accessibility plugin folder into "Plugins".
 4. Re-open your project in the Unreal Editor.
-5. Go to Editor/Plugins,  and check that Multi-sensory Accessibility plugin is activated. 
+5. If it asks to rebuild a plugin (ie because "it was build by a different version"), click yes. Depending on your hardware, and if you work in a C++ project already or not, building the plugin may need from a few seconds to minutes.
+6. Go to Editor/Plugins,  and check that Multi-sensory Accessibility plugin is activated. 
     
 # Dynamic subtitles setup
 
 1. You need an UI widget that will display the subtitles, offered through a component provided by the plugin, called MultiSensoryAccessibilityTextBlock. As example, check the SubtitleWidgetBP offered within the plugin's Content/Widgets folder.
-2. Once you have an audio asset imported in your editor, go to its settings and define a subtitle(s) text. This is the constant string that will be completed with dynamic description in real time. The values for the dynamic descriptions (above/below/ahead/from the back, etc.) can be customised and localised by defining the source file for the strings in the variable "ccLocalisedDescriptions" in this component.
+2. Once you have an audio asset imported in your editor, go to its settings and define a subtitle(s) text. This is the constant string that will be completed with dynamic description in real time. The values for the dynamic descriptions (above/below/ahead/from the back, etc.) can be customised and localised by defining the source file for the strings in the variable "ccLocalisedDescriptions" in this component (the file you define needs to exist in your project's Content folder).
 3. Now you need to have, in your Unreal map, an actor that will be the 3D audio emitter. 
 4. Add to your actor a MultiSensoryAccessibilityAudio component, and convert it to reusable blueprint class with the button for such effect.
 5. Once the blueprint class for the actor is open for editing, assign your MultiSensoryAccessibilityAudio componen variable so you have easy access to it.
