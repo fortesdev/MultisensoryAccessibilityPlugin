@@ -40,7 +40,7 @@ The goal of this plugin is to offer aid for deficiencies and needs currently not
 7. Now, you decide when to create and add or remove (in the viewport) your UI widget for the subtitles. For example, in your map EventBeginPlay.
 8. The next step is set sounds to your actor and play or stop the audio asset. Dynamic subtitles will be display automatically.
 
-# Low vision setup
+# Low vision aid setup
 
 1. Start by adding one (or more) MultiSensoryAccessibilityPPVolume. Decide if you want the visual aids to be applied only within this Post-processing volume, or to the whole map, by keeping disabled, or enabling "Infinite Extend (unbound)" in the volume settings.
 2. All low vision changes are applied through a common blueprint method provided, called "Increase of color, contrast and vision within a volume". This volume is injected with the folloring required parameters:
@@ -50,4 +50,29 @@ The goal of this plugin is to offer aid for deficiencies and needs currently not
    d. An outline color. We recommend light outline color in dark objects or over dark backgrounds, and viceversa. Remember you can change all this parameters in real time.
    e. An outline "Strenght" value. This will determine how thick the outlines are, customisable in real time.
    f. A bool for simulating low vision while debugging, for testing your implementation.
-   
+
+# Color blindness aid setup
+
+1. Start by adding one (or more) MultiSensoryAccessibilityPPVolume, if you didn't already. Decide if you want the visual aids to be applied only within this Post-processing volume, or to the whole map, by keeping disabled, or enabling "Infinite Extend (unbound)" in the volume settings.
+2. All color blidness aid changes are applied through a common blueprint method provided, called "Simulation and correction of different color blindness (Dichromacy)". This volume is injected with the folloring required parameters:
+   a.  An instance of MultiSensoryAccessibilityPPVolume, that we created previously.
+   b. The affected eye cone type. The possible values are none (no aid), red, green and blue deficiencies.
+   c. An instance to a MSMaterialParameter. This is a set of constant definitions used by the shaders. We provide one ready to use in the plugin's Content folder. We do not recomment altering it for the color blidness case, as it is edited by the plugin in real time. Keep also in mind this file is shared with Color blindness aid.
+   d. The color technique used for the aid. One is Shaders, very biologically precise, but strict and lacking contrast. The second is using LUTs (Look-up tables), that allows a more refined and artistic definition. We recommend using shaders, unless you use your own LUT definitions.
+   e. The mode of aid. You can Simulate (to see how a color blind person see), Simulate Corrected (to see the correction as a color blidness person), and Correct, which should be the mode applied in production with the aid enabled.
+   f. The strenght or of the aid (bigger the more affected a color cone is)
+
+# Epilepsy aid setup
+
+1.  Start by adding a MultiSensoryAccessibilityEpilepsy instance to your map. This component includes a scene capture that will try to detect the blinking. You can potentially also include it in your player, by making sure (through code), that the Player's camera is feeding the Scene Capture of the component (simply adding it to your Player blueprint will work, as it needs the correct coordinates).
+2.  There are a range of parameters you can customise in your Epilepsy aid component:
+   a. The resolution of the capture used for analysis. The higher the more precise, but also more expensive (captures are analyses between each frame)
+   b. The field of view of the capture (ideally equal to your game's settings).
+   c. The max amount of blinks per second. While under 5 is considered safe for most people, a conservative 3 is recommended.
+   d. Screen fragment to check. This is the portion of the screen that must change in order for a blink to be considered dangerous. Default value is 5, which means, a blink in a fifth of the screen will trigger the recognition, while value 1 is the whole screen. 
+3. Important: Please ensure a deep testing before including this Epilepsy aid, warning the user about it. While false positives cause no harm, false negatives may happen for example due to actors, or even a third person character, intermittently blocking the light source of the blinking. This is one of the reasons the scene capture component is originally meant to be used statically in the map: as part of a player, linked to its moving camera, can be hard to tune in fast pacing games. It is better to aim it to the "potentially hazardous" scenes instead. 
+
+# Future Machine Learning improvements
+
+Some other solutions were studied while preparing this plugin, that are not included as they required extra infrastructue (and this plugin is meant to be standalone and offline). These solutions are:
+1. Audio Descriptions. 
