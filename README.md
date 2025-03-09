@@ -6,21 +6,21 @@ Video demo:
 
 [![Click to see a video demo](https://img.youtube.com/vi/BThkBb_bR0w/0.jpg)](https://www.youtube.com/watch?v=BThkBb_bR0w)
 
-The goal of this plugin is to offer aid for deficiencies and needs currently not existing in Unreal, so developers can help as much players as possible without investing money, in just a few minutes. This includes:
+The goal of this plugin is to offer aid currently not existing in Unreal, so developers can help as much players with deficiencies as possible, without investing money, in just a few minutes. This includes:
 
-1. Hearing aid
+1. Hearing aid:
    - The plugin offers a system for dynamic subtitles, which provides real time spatial information relative to the player: a 3D sound emitter will concatenate its defined subtitle with "getting closer/moving away", "from the right/left", "ahead/behind" and "above/bellow".
-   - While not included as part of the plugin (given the external infrastructure needed), we suggest a method for having Audio description using AI, etc. From a static "Gun shot" string, a player will get a more descriptive "Gun shut from the left, above, behind".
-2. Low  vision
-   - To cover a wide range of neural or ocular deficiencies, the plugin offers two modes: Enhanced Contrast mode (a variant of cel-shading where unnecessary details are removed, while countours are highlighted), and High Contrast mode, where only the countour of the monochrome silhouette is offered. All parameters such as highlight colors, depth, etc. can be adjusted in real time for a more refined aid.
+   - While not included as part of the plugin (given the external infrastructure needed), we suggest (in the last section "Future Machine Learning improvements") a method for having Audio description using AI: from a static "Gun shot" string, the player will get a more descriptive "Gun shut from the left, behind you, above".
+2. Low vision:
+   - To cover a wide range of neural or ocular deficiencies, the plugin offers two modes: Enhanced Contrast mode (a variant of cel-shading where unnecessary details are removed, while countours are highlighted), and High Contrast mode, where only the outlines of the monochrome silhouette is offered. All parameters such as highlight colors, depth, etc. can be adjusted in real time for a more refined aid.
    - A "low visibility simulation" mode is offered, for testing the contrast settings while debugging.
-3. Color blidness
+3. Color blidness:
    - While a color blidness help support exists in UE, this plugins enhances its customisastion in the following aspects:
-   - Color blidness corrections are applied in a Post-processing volume, instead as a general plugin. As result, the correction can be applied differently in specific areas of the level, and be combined with other shaders, for a more refined aid.
+   - Color blidness corrections are applied in a Post-processing volume, instead of the general rendering pipeline. As result, the correction can be applied in the map and not the UI, in specific areas of the level instead of everywhere, and be combined with other shaders, for a more refined aid.
    - Opposite to the built-in help in UE, which offers 10 leves of severity only, the plugin allows a float value and more customisation options.
-   - Two correction modes are offered: the common shader solution (more physiological precise), and also a variant that uses Look-up tables (LUT), for a more flexible solutions (for example, reducing the loss of information if the problematic color patterns are known).
-4. Epilepsy
-   - The plugin offers an attempt at detecting dangerous blinking, so players affected by epilepsy can be protected. Note that there are inherent risks and this capability must be used responsibly: as there can be false positives, also false negatives may arise. For instance: different people may be affected by different blinking intervals, and the blinking source may be intermittently hidden by actors during gameplay, affecting calculations. Feel free experimenting the the customisation if the default values do not fit your game.
+   - Two correction modes are offered: the common shader solution (more physiologically precise), and also a variant that uses Look-up tables (LUTs), for a more flexible solution (for example, reducing the loss of information if the problematic color patterns are known).
+4. Epilepsy:
+   - The plugin offers an attempt at detecting dangerous blinking, so players affected by epilepsy can be protected. Note that there are inherent risks, and this capability must be used responsibly: as there can be false positives, also false negatives may arise. For instance: different people may be affected by different blinking intervals, and the blinking source may be intermittently hidden by actors during gameplay, affecting calculations.
 
 
 # Plugin setup
@@ -70,7 +70,7 @@ The goal of this plugin is to offer aid for deficiencies and needs currently not
    c. An instance to a MSMaterialParameter. This is a set of constant definitions used by the shaders. We provide one ready to use in the plugin's Content folder. We do not recomment altering it for the color blidness case, as it is edited by the plugin in real time. Keep also in mind this file is shared with Color blindness aid.
    d. The color technique used for the aid. One is Shaders, very biologically precise, but strict and lacking contrast. The second is using LUTs (Look-up tables), that allows a more refined and artistic definition. We recommend using shaders, unless you use your own LUT definitions.
    e. The mode of aid. You can Simulate (to see how a color blind person see), Simulate Corrected (to see the correction as a color blidness person), and Correct, which should be the mode applied in production with the aid enabled.
-   f. The strenght or of the aid (bigger the more affected a color cone is)
+   f. The strenght or of the aid (bigger the more severily affected a color cone is)
 ![Screenshot 2025-03-09 at 17 14 00](https://github.com/user-attachments/assets/0c174c80-4503-40ba-b01f-a038bc5f677e)
 
 # Epilepsy aid setup
