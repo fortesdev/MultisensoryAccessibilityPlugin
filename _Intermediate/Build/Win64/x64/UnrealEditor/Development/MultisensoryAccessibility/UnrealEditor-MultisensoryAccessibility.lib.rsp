@@ -1,0 +1,22 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-MultisensoryAccessibility.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Users\Fran\Documents\Unreal Projects\MyProject2\Intermediate\Build\Win64\x64\MyProject2Editor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h.obj"
+"C:\Users\Fran\Documents\Unreal Projects\MyProject2\Plugins\MultisensoryAccessibility\Intermediate\Build\Win64\x64\UnrealEditor\Development\MultisensoryAccessibility\Module.MultisensoryAccessibility.cpp.obj"
+"C:\Users\Fran\Documents\Unreal Projects\MyProject2\Plugins\MultisensoryAccessibility\Intermediate\Build\Win64\x64\UnrealEditor\Development\MultisensoryAccessibility\MultisensoryAccessibility.cpp.obj"
+"C:\Users\Fran\Documents\Unreal Projects\MyProject2\Plugins\MultisensoryAccessibility\Intermediate\Build\Win64\x64\UnrealEditor\Development\MultisensoryAccessibility\MultisensoryAccessibilityAudioComponent.cpp.obj"
+"C:\Users\Fran\Documents\Unreal Projects\MyProject2\Plugins\MultisensoryAccessibility\Intermediate\Build\Win64\x64\UnrealEditor\Development\MultisensoryAccessibility\MultisensoryAccessibilityBPLibrary.cpp.obj"
+"C:\Users\Fran\Documents\Unreal Projects\MyProject2\Plugins\MultisensoryAccessibility\Intermediate\Build\Win64\x64\UnrealEditor\Development\MultisensoryAccessibility\MultisensoryAccessibilityColorBlindness.cpp.obj"
+"C:\Users\Fran\Documents\Unreal Projects\MyProject2\Plugins\MultisensoryAccessibility\Intermediate\Build\Win64\x64\UnrealEditor\Development\MultisensoryAccessibility\MultisensoryAccessibilityEpilepsy.cpp.obj"
+"C:\Users\Fran\Documents\Unreal Projects\MyProject2\Plugins\MultisensoryAccessibility\Intermediate\Build\Win64\x64\UnrealEditor\Development\MultisensoryAccessibility\MultisensoryAccessibilityLowVision.cpp.obj"
+"C:\Users\Fran\Documents\Unreal Projects\MyProject2\Plugins\MultisensoryAccessibility\Intermediate\Build\Win64\x64\UnrealEditor\Development\MultisensoryAccessibility\MultisensoryAccessibilityPPVolume.cpp.obj"
+"C:\Users\Fran\Documents\Unreal Projects\MyProject2\Plugins\MultisensoryAccessibility\Intermediate\Build\Win64\x64\UnrealEditor\Development\MultisensoryAccessibility\MultisensoryAccessibilityTextBlock.cpp.obj"
+"C:\Users\Fran\Documents\Unreal Projects\MyProject2\Plugins\MultisensoryAccessibility\Intermediate\Build\Win64\x64\UnrealEditor\Development\MultisensoryAccessibility\MultisensoryAccessibility.init.gen.cpp.obj"
+"C:\Users\Fran\Documents\Unreal Projects\MyProject2\Plugins\MultisensoryAccessibility\Intermediate\Build\Win64\x64\UnrealEditor\Development\MultisensoryAccessibility\MultisensoryAccessibilityBPLibrary.gen.cpp.obj"
+"C:\Users\Fran\Documents\Unreal Projects\MyProject2\Plugins\MultisensoryAccessibility\Intermediate\Build\Win64\x64\UnrealEditor\Development\MultisensoryAccessibility\Default.rc2.res"
+/OUT:"C:\Users\Fran\Documents\Unreal Projects\MyProject2\Plugins\MultisensoryAccessibility\Intermediate\Build\Win64\x64\UnrealEditor\Development\MultisensoryAccessibility\UnrealEditor-MultisensoryAccessibility.lib"
