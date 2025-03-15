@@ -103,3 +103,8 @@ Google offers a decent [AI Audio Classifier](https://ai.google.dev/edge/mediapip
 2. **Fast Neural Style Transfer**:
 
 There is an official Neural Renderer plugin in UE5 that allows using ONNX models in post processing materials. For example those offered [here](https://github.com/onnx/models/tree/main/validated/vision/style_transfer/fast_neural_style). While giving a glipmse of future capabilities, this is currently an experimental feature that cannot be deployed in production (the packaging of your project will fail if you attempt to do so). Also, you'll have to train in old version of PyTorch, then convert to ONNX, with potential incompatibility issues. While interesting technologycally, it is not a recommended alternative to the shaders provided by the plugin, given the low performance and quality in execution.
+
+## Feedback form
+
+Do you wish to provide comments on the plugin? Please fill the following form to help the project: 
+https://forms.gle/Rttr8U9UdCZRjzYZ8
