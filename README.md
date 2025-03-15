@@ -10,17 +10,17 @@ The goal of this plugin is to offer aid currently not existing in Unreal, so dev
 
 1. **Hearing aid:**
    - The plugin offers a system for dynamic subtitles, which provides real time spatial information relative to the player: a 3D sound emitter will concatenate its defined subtitle with "getting closer/moving away", "from the right/left", "ahead/behind" and "above/bellow".
-   - While not included as part of the plugin (given the external infrastructure needed), we suggest (in the last section "Future Machine Learning improvements") a method for having Audio description using AI: from a static "Gun shot" string, the player will get a more descriptive "Gun shut from the left, behind you, above".
+   - While not included as part of the plugin (given the external infrastructure needed), we suggest (in the last section "Future Machine Learning improvements") a method for having Audio description using AI: from a static "Gun shot" string, the player may get a more descriptive "Gun shut from the left, behind you, above".
 2. **Low vision:**
-   - To cover a wide range of neural or ocular deficiencies, the plugin offers two modes: Enhanced Contrast mode (a variant of cel-shading where unnecessary details are removed, while countours are highlighted), and High Contrast mode, where only the outlines of the monochrome silhouette is offered. All parameters such as highlight colors, depth, etc. can be adjusted in real time for a more refined aid.
+   - To cover a wide range of neural or eye disorders, the plugin offers two modes: Enhanced Contrast mode (a variant of cel-shading where unnecessary details are removed, while countours are highlighted), and Monochrome  mode, where only the outlines are offered. All parameters such as highlight colors, depth, etc. can be adjusted in real time for a more refined aid.
    - A "low visibility simulation" mode is offered, for testing the contrast settings while debugging.
 3. **Color blidness:**
    - While a color blidness help support exists in UE, this plugins enhances its customisastion in the following aspects:
    - Color blidness corrections are applied in a Post-processing volume, instead of the general rendering pipeline. As result, the correction can be applied in the map and not the UI, in specific areas of the level instead of everywhere, and be combined with other shaders, for a more refined aid.
-   - Opposite to the built-in help in UE, which offers 10 leves of severity only, the plugin allows a float value and more customisation options.
-   - Two correction modes are offered: the common shader solution (more physiologically precise), and also a variant that uses Look-up tables (LUTs), for a more flexible solution (for example, reducing the loss of information if the problematic color patterns are known).
+   - Opposite to the built-in help in UE, with all parameters hardcoded (including the severity levels), the plugin rework the color transformations and allows floating point adjustments for all its inputs.
+   - Two correction modes are offered instead of one: the common shader solution (more physiologically precise), but also a variant that uses Look-up tables (LUTs), for a more flexible solution (for example, reducing the information loss if problematic color patterns are known).
 4. **Epilepsy:**
-   - The plugin offers an attempt at detecting dangerous blinking, so players affected by epilepsy can be protected. Note that there are inherent risks, and this capability must be used responsibly: as there can be false positives, also false negatives may arise. For instance: different people may be affected by different blinking intervals, and the blinking source may be intermittently hidden by actors during gameplay, affecting calculations.
+   - The plugin offers an attempt at detecting dangerous blinking, so players affected by epilepsy can be protected. Note that there are inherent risks, and this capability must be used responsibly: as there can be false positives, also false negatives may arise. For instance: different people may be affected by different blinking intervals, and the blinking source may be intermittently hidden by actors during gameplay, affecting the plugin's output.
 
 
 # Plugin setup steps
