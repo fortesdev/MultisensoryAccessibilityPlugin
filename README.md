@@ -6,18 +6,18 @@ Video demo:
 
 [![Click to see a video demo](https://img.youtube.com/vi/BThkBb_bR0w/0.jpg)](https://www.youtube.com/watch?v=BThkBb_bR0w)
 
-The goal of this plugin is to offer aid currently not existing in Unreal, so developers can help as much players with deficiencies as possible, without investing money, in just a few minutes. This includes:
+The goal of this plugin is simple: making accessibility in Unreal projects as cheap and easy as possible. Because everyone wants a wider audience, and helping others to enjoy our creations. For that purpose, I have prepared a set of built-in methods and classes to cover the following access needs:
 
 1. **Hearing aid:**
-   - The plugin offers a system for dynamic subtitles, which provides real time spatial information relative to the player: a 3D sound emitter will concatenate its defined subtitle with "getting closer/moving away", "from the right/left", "ahead/behind" and "above/bellow".
+   - The plugin offers a system for dynamic subtitles, which provides real-time spatial information relative to the player: a 3D sound emitter will concatenate its defined subtitle with "getting closer/moving away", "from the right/left", "ahead/behind" and "above/bellow".
    - While not included as part of the plugin (given the external infrastructure needed), we suggest (in the last section "Future Machine Learning improvements") a method for having Audio description using AI: from a static "Gun shot" string, the player may get a more descriptive "Gun shut from the left, behind you, above".
 2. **Low vision:**
-   - To cover a wide range of neural or eye disorders, the plugin offers two modes: Enhanced Contrast mode (a variant of cel-shading where unnecessary details are removed, while countours are highlighted), and Monochrome  mode, where only the outlines are offered. All parameters such as highlight colors, depth, etc. can be adjusted in real time for a more refined aid.
+   - To cover a wide range of neural or eye disorders, the plugin offers two modes: Enhanced Contrast mode (a variant of cel-shading where unnecessary details are removed, while contours are highlighted), and Monochrome  mode, where only the outlines are offered. All parameters such as highlight colors, depth, etc. can be adjusted in real time for a more refined aid.
    - A "low visibility simulation" mode is offered, for testing the contrast settings while debugging.
-3. **Color blidness:**
-   - While a color blidness help support exists in UE, this plugins enhances its customisastion in the following aspects:
-   - Color blidness corrections are applied in a Post-processing volume, instead of the general rendering pipeline. As result, the correction can be applied in the map and not the UI, in specific areas of the level instead of everywhere, and be combined with other shaders, for a more refined aid.
-   - Opposite to the built-in help in UE, with all parameters hardcoded (including the severity levels), the plugin rework the color transformations and allows floating point adjustments for all its inputs.
+3. **Color blindness:**
+   - While a color blindness help support exists in UE, this plugin enhances its customisation in the following aspects:
+   - Color blindness corrections are applied in a Post-processing volume, instead of the general rendering pipeline. As result, the correction can be applied in the map and not the UI, in specific areas of the level instead of everywhere, and be combined with other shaders, for a more refined aid.
+   - Opposite to the built-in help in UE, with all parameters hardcoded (including the severity levels), the plugin re-work the color transformations and allows floating point adjustments for all its inputs.
    - Two correction modes are offered instead of one: the common shader solution (more physiologically precise), but also a variant that uses Look-up tables (LUTs), for a more flexible solution (for example, reducing the information loss if problematic color patterns are known).
 4. **Epilepsy:**
    - The plugin offers an attempt at detecting dangerous blinking, so players affected by epilepsy can be protected. Note that there are inherent risks, and this capability must be used responsibly: as there can be false positives, also false negatives may arise. For instance: different people may be affected by different blinking intervals, and the blinking source may be intermittently hidden by actors during gameplay, affecting the plugin's output.
@@ -29,7 +29,7 @@ The goal of this plugin is to offer aid currently not existing in Unreal, so dev
 2. Create a folder "Plugins" in the root of your project, if you don't have one already.
 3. Copy the Multi-sensory Accessibility plugin folder into "Plugins".
 4. Re-open your project in the Unreal Editor.
-5. If it asks to rebuild the plugin (ie because "it was build by a different version"), click yes. Depending on your hardware, and if you work in a C++ project already or not, building the plugin may need from a few seconds to minutes.
+5. If it asks to rebuild the plugin (ie. because "it was build by a different version"), click yes. Depending on your hardware, and if you work in a C++ project already or not, building the plugin may need from a few seconds to minutes.
 6. Go to Editor/Plugins, and check that Multi-sensory Accessibility Plugin is enabled. 
     
 # Dynamic subtitles setup
@@ -60,7 +60,7 @@ The goal of this plugin is to offer aid currently not existing in Unreal, so dev
    
 ![Screenshot 2025-03-09 at 17 12 45](https://github.com/user-attachments/assets/f07fe786-953c-4ab9-8d19-fbb68b4ff0d2)
 
-2. All low vision changes are applied through a common blueprint method, called "Increase of color, contrast and vision within a volume". This method is injected with the folloring required parameters:
+2. All low vision changes are applied through a common blueprint method, called "Increase of color, contrast and vision within a volume". This method is injected with the following required parameters:
    1. An instance of *MultiSensoryAccessibilityPPVolume*, that we created previously.
    2. An instance to a MSMaterialParameter. This is a set of constant definitions used by the shaders. We provide one ready to use in the plugin's Content folder, but you can edit it and/or create your own. Some example of the constants are color thresolds, outline growth rate, and more. Keep in mind this file is shared with Color blindness aid, described later.
    3. A value for "color mode". It can be either *Normal* (aid disabled), *High contrast* (with unnecessary details and colors removed), and *Monochrome*.
@@ -74,28 +74,28 @@ The goal of this plugin is to offer aid currently not existing in Unreal, so dev
 # Color blindness aid setup
 
 1. Similar to the low vision aid, this feature uses one (or more) instances of the *MultiSensoryAccessibilityPPVolume* class, to add to your map. Remember to decide if you want the visual aids to be applied only within this Post-processing volume, or to the whole map, by keeping disabled, or enabling, *Infinite Extend (unbound)* in the volume settings.
-2. All color blidness aid changes are applied through a common blueprint method provided, called *Simulation and correction of different color blindness (Dichromacy)*. This method is injected with the folloring required parameters:
+2. All color blindness aid changes are applied through a common blueprint method provided, called *Simulation and correction of different color blindness (Dichromacy)*. This method is injected with the following required parameters:
    1.  An instance of *MultiSensoryAccessibilityPPVolume*, that we created previously.
    2. The affected eye cone type. The possible values are *none* (no deficiency), *red*, *green* and *blue*.
-   3. An instance to a *MSMaterialParameter*. This is a set of constant definitions used by the shaders. We provide one ready to use in the plugin's Content folder. We do not recomment altering it for the color blidness. Keep also in mind this file is shared with Color blindness aid.
-   4. The color technique used for the aid. One is *Shaders*, very precise, but strict and lacking contrast. The second is using *LUTs* (Look-up tables), that allows a more refined and artistic definition, but bad for HDR. We recommend using shaders unless create your own LUT definitions based on your map color patterns.
-   5. The mode of aid. You can *Simulate* (to see how a color blind person see), *Simulate Corrected* (to see the correction as a color blidness person), and *Correct*, which should be the mode applied in production with the aid enabled.
+   3. An instance to a *MSMaterialParameter*. This is a set of constant definitions used by the shaders. We provide one ready to use in the plugin's Content folder. We do not recomment altering it for the color blindness. Keep also in mind this file is shared with Color blindness aid.
+   4. The color technique used for the aid. One is *Shaders*, very precise, but strict and lacking contrast. The second is using *LUTs* (Look-up tables), that allows a more refined and artistic definition, but bad for HDR. We recommend using shaders unless you create your own LUT definitions based on your map color patterns.
+   5. The mode of aid. You can *Simulate* (to see how a color blind person see), *Simulate Corrected* (to see the correction as a color blindness person), and *Correct*, which should be the mode applied in production with the aid enabled.
    6. The *Strenght* or of the aid (bigger the more severily affected a color cone is)
       
 ![Screenshot 2025-03-09 at 17 14 00](https://github.com/user-attachments/assets/0c174c80-4503-40ba-b01f-a038bc5f677e)
 
 # Epilepsy aid setup
 
-1. This aid skips the use of post-processing volumes and instead use a new class, called *MultiSensoryAccessibilityEpilepsy*, based on SceneCapture. So start by adding an instance of this new class into your map, preferibly point to a critical area where the blinking is expected. You can potentially also include it in your player, by making sure (through code), that the Player's camera is feeding the Scene Capture of the component (simply adding it to your Player blueprint will not work, as it needs the correct directional coordinates). More info about this at the end of this section.
+1. This aid skips the use of post-processing volumes and instead use a new class, called *MultiSensoryAccessibilityEpilepsy*, based on SceneCapture. So start by adding an instance of this new class into your map, preferably point to a critical area where the blinking is expected. You can potentially also include it in your player, by making sure (through code), that the Player's camera is feeding the Scene Capture of the component (simply adding it to your Player blueprint will not work, as it needs the correct directional coordinates). More info about this at the end of this section.
 2. Before using the *MultiSensoryAccessibilityEpilepsy*, take some time to check the available parameters this component provides in the editor:
-   §. The resolution of the capture used for analysis. The higher the more precise, but also more expensive hardware-wise (screen captures are analysed between each frame)
+   §. The resolution of the capture used for analysis. The higher, the more precise, but also more expensive hardware-wise (screen captures are analyzed between each frame)
    1. The field of view of the capture (ideally, equal to your player's camera).
    2. The max amount of blinks per second allowed. While under 5 is considered safe for most people, a conservative 3 is recommended.
-   4. Screen fragment to check. This is the portion of the screen that must change in order for a blink to be considered dangerous. Default value is 5, which means, a blink in a fifth of the screen will trigger the recognition, while value 1 is the whole screen. Smaller the better protection, but the easier for false negatives to happen. This is the harder valuet to adjust as it depends on your gameplay.
+   4. Screen fragment to check. This is the portion of the screen that must change in order for a blink to be considered dangerous. Default value is 5, which means, a blink in a fifth of the screen will trigger the recognition, while value 1 is the whole screen. Smaller the better protection, but the easier for false negatives to happen. This is the harder value to adjust as it depends on your gameplay.
       
  ![Screenshot 2025-03-09 at 17 14 47](https://github.com/user-attachments/assets/1b808459-2a8c-4500-87e6-0a4313a64e52)
 
-3. Once you have added an instance of the epilepsy component and decided your values above, you can use the delegate method *Callback Epilepsy* to know when a blinking is happening in run time (or the blinking has stopped). You are free to inform the user, or preferibly, blocked the dangerous view from the screen, when this happens.
+3. Once you have added an instance of the epilepsy component and decided your values above, you can use the delegate method *Callback Epilepsy* to know when a blink is happening in run time (or the blinking has stopped). You are free to inform the user, or preferably, blocked the dangerous view from the screen, when this happens.
 
  ![Screenshot 2025-03-09 at 17 14 22](https://github.com/user-attachments/assets/75a7d1ec-b43d-4862-b8c2-595cf953157a)
 
@@ -113,7 +113,7 @@ Google offers a decent [AI Audio Classifier](https://ai.google.dev/edge/mediapip
 
 2. **Fast Neural Style Transfer**:
 
-There is an official Neural Renderer plugin in UE5 that allows using ONNX models in post processing materials. For example those offered [here](https://github.com/onnx/models/tree/main/validated/vision/style_transfer/fast_neural_style). While giving a glipmse of future capabilities, this is currently an experimental feature that cannot be deployed in production (the packaging of your project will fail if you attempt to do so). Also, you'll have to train your model using an old version of PyTorch, then convert to ONNX, with potential incompatibility issues. While interesting, it is not a recommended alternative to the shaders provided by the plugin, as they provide a much higher levels of quality and performance.
+There is an official Neural Renderer plugin in UE5 that allows using ONNX models in post processing materials. For example those offered [here](https://github.com/onnx/models/tree/main/validated/vision/style_transfer/fast_neural_style). While giving a glimpse of future capabilities, this is currently an experimental feature that cannot be deployed in production (the packaging of your project will fail if you attempt to do so). Also, you'll have to train your model using an old version of PyTorch, then convert to ONNX, with potential incompatibility issues. While interesting, it is not a recommended alternative to the shaders provided by the plugin, as they provide a much higher levels of quality and performance.
 
 ## Feedback form
 
