@@ -49,8 +49,8 @@ The goal of this plugin is simple: making accessibility in Unreal projects as ch
 ![Screenshot 2025-03-09 at 17 09 23](https://github.com/user-attachments/assets/05947621-3966-4efe-957e-cd5612eba6dc)
 
 8. Now, you decide when to create and add (or remove from the viewport) your UI widget for the subtitles. For example, you could add to viewport in your map's *EventBeginPlay*.
-9. The values for the dynamic descriptions (above/below/ahead/from the back, etc.) can also be customised and localised. This is achieved by defining the source file for the strings in the editor's variable *ccLocalisedDescriptions*, of your MultiSensoryAccessibilityAudio component. Important: the file you define needs to exist in your project's Content folder (default english words will presented if not found).
-10. The next step is setting sounds to your actor, and play or stop them. Dynamic subtitles will be display automatically while the audio asset is being emitted.
+9. The values for the dynamic descriptions (above/below/ahead/from the back, etc.) can also be customised and localised. This is achieved by defining the source file for the strings in the editor's variable *ccLocalisedDescriptions*, of your MultiSensoryAccessibilityAudio component. Important: the file you define needs to exist in your project's Content folder (default english words will presented if not found). See the example file *positionsCCSubtitlesEN.srt*, and its *.uasset* equivalent, in the plugin's Content folder.
+11. The next step is setting sounds to your actor, and play or stop them. Dynamic subtitles will be display automatically while the audio asset is being emitted.
 
 ![Screenshot 2025-03-09 at 17 09 58](https://github.com/user-attachments/assets/70204307-8a01-4573-be19-e372f5761afa)
 
@@ -80,22 +80,22 @@ The goal of this plugin is simple: making accessibility in Unreal projects as ch
    3. An instance to a *MSMaterialParameter*. This is a set of constant definitions used by the shaders. We provide one ready to use in the plugin's Content folder. We do not recomment altering it for the color blindness. Keep also in mind this file is shared with Color blindness aid.
    4. The color technique used for the aid. One is *Shaders*, very precise, but strict and lacking contrast. The second is using *LUTs* (Look-up tables), that allows a more refined and artistic definition, but bad for HDR. We recommend using shaders unless you create your own LUT definitions based on your map color patterns.
    5. The mode of aid. You can *Simulate* (to see how a color blind person see), *Simulate Corrected* (to see the correction as a color blindness person), and *Correct*, which should be the mode applied in production with the aid enabled.
-   6. The *Strenght* or of the aid (bigger the more severily affected a color cone is)
+   6. The *Strenght* of the applied color changes (bigger the more severily affected a color cone is)
       
 ![Screenshot 2025-03-09 at 17 14 00](https://github.com/user-attachments/assets/0c174c80-4503-40ba-b01f-a038bc5f677e)
 
 # Epilepsy aid setup
 
-1. This aid skips the use of post-processing volumes and instead use a new class, called *MultiSensoryAccessibilityEpilepsy*, based on SceneCapture. So start by adding an instance of this new class into your map, preferably point to a critical area where the blinking is expected. You can potentially also include it in your player, by making sure (through code), that the Player's camera is feeding the Scene Capture of the component (simply adding it to your Player blueprint will not work, as it needs the correct directional coordinates). More info about this at the end of this section.
+1. This aid skips the use of post-processing volumes and instead use a new class, called *MultiSensoryAccessibilityEpilepsy*, based on SceneCapture. So start by adding an instance of this new class into your map, preferably pointing to a critical area where the blinking is expected (you'll see a preview of its field of view). You can potentially also include this component in your player, by making sure (through code), that the Player's camera is feeding the Scene Capture of the component (simply adding it to your Player blueprint will not work, as it needs the correct directional coordinates). But we do not recommend this - more info at the end of this section.
 2. Before using the *MultiSensoryAccessibilityEpilepsy*, take some time to check the available parameters this component provides in the editor:
-   §. The resolution of the capture used for analysis. The higher, the more precise, but also more expensive hardware-wise (screen captures are analyzed between each frame)
-   1. The field of view of the capture (ideally, equal to your player's camera).
-   2. The max amount of blinks per second allowed. While under 5 is considered safe for most people, a conservative 3 is recommended.
+   1. The resolution of the capture used for analysis. The higher, the more precise, but also more expensive hardware-wise (screen captures are analyzed between each frame)
+   2. The field of view of the capture (ideally, equal to your player's camera).
+   3. The max amount of blinks per second allowed. While under 5 is considered safe for most people, a conservative 3 is recommended.
    4. Screen fragment to check. This is the portion of the screen that must change in order for a blink to be considered dangerous. Default value is 5, which means, a blink in a fifth of the screen will trigger the recognition, while value 1 is the whole screen. Smaller the better protection, but the easier for false negatives to happen. This is the harder value to adjust as it depends on your gameplay.
       
  ![Screenshot 2025-03-09 at 17 14 47](https://github.com/user-attachments/assets/1b808459-2a8c-4500-87e6-0a4313a64e52)
 
-3. Once you have added an instance of the epilepsy component and decided your values above, you can use the delegate method *Callback Epilepsy* to know when a blink is happening in run time (or the blinking has stopped). You are free to inform the user, or preferably, blocked the dangerous view from the screen, when this happens.
+3. Once you have added an instance of the epilepsy component and decided your values above, you can use the delegate method *Callback Epilepsy* to know when a blink is happening in run time (or the blinking has stopped). You are free to inform the user, or preferably, to block the dangerous view from the screen, when this happens.
 
  ![Screenshot 2025-03-09 at 17 14 22](https://github.com/user-attachments/assets/75a7d1ec-b43d-4862-b8c2-595cf953157a)
 
@@ -109,11 +109,11 @@ Some other solutions were studied (while preparing this plugin) that are not inc
 Google offers a decent [AI Audio Classifier](https://ai.google.dev/edge/mediapipe/solutions/audio/audio_classifier). You can host a web service that loads this model, access the web service in an Unreal's web widget, present it in your game UI, and send audio files or an audio stream to it. Your web service can then return a webpage with the classifications as a list of probabilities, to be listed in the user interface. This is feasible as of now, as seen in the video example at the beginning of the page, but there are a few (solvable) problems you need to keep in mind:
    1. Google's classification model has a tendency to filter background noise. This may be a problem for atmospheric and quiet games/situations, as important low volume sounds may be completely ignored. A new model would have to be trained for such specific situations.
    2. The AI model is also very indecisive, changing its mind in fractions of a second, which can make tricky to offer it in a stable UI, readable to the player. This can be perhaps even harder in a model that does not filter background noises.
-   3. If you decide to not send static audios, but instead the mix of the audio from the game, you'll find out the only way to allow this through web in Unreal is using the microphone. But Unreal's default web component doesn't offer CEF (Chromium Experiment Features), so the microphone permissions cannot be changed. Fortunately, there are (paid) Unreal web plugins out there that offers this capability.
+   3. If you decide to not send static audios, but instead the mix of the audio from the game, you'll find out the only way to allow this through web in Unreal is using the microphone. But Unreal's default web component doesn't offer CEF (Chromium Experiment Features), so the microphone permissions cannot be changed. Fortunately, there are (paid) Unreal web plugins out there that offer this capability.
 
 2. **Fast Neural Style Transfer**:
 
-There is an official Neural Renderer plugin in UE5 that allows using ONNX models in post processing materials. For example those offered [here](https://github.com/onnx/models/tree/main/validated/vision/style_transfer/fast_neural_style). While giving a glimpse of future capabilities, this is currently an experimental feature that cannot be deployed in production (the packaging of your project will fail if you attempt to do so). Also, you'll have to train your model using an old version of PyTorch, then convert to ONNX, with potential incompatibility issues. While interesting, it is not a recommended alternative to the shaders provided by the plugin, as they provide a much higher levels of quality and performance.
+There is an official Neural Renderer plugin in UE5 that allows using ONNX models in post processing materials. For example those offered [here](https://github.com/onnx/models/tree/main/validated/vision/style_transfer/fast_neural_style). While giving a glimpse of future capabilities, this is currently an experimental feature that cannot be deployed in production (the packaging of your project will fail if you attempt to do so). Also, you'll have to train your model using an old version of PyTorch, then convert it to ONNX, with potential incompatibility issues. While interesting, it is not a recommended alternative to the shaders provided by the plugin, as neural models for rendering provide worse visual quality and efficiency.
 
 ## Feedback form
 
