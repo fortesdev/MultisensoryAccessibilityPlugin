@@ -46,6 +46,11 @@ void UMultisensoryAccessibilityAudioComponent::updateSubtitles()
 	 }	
 }
 
+void UMultisensoryAccessibilityAudioComponent::changeSubtitlesFile(FString newFile) {
+	ccLocalisedDescriptions = newFile;
+	preloadConstants();
+}
+
 FText UMultisensoryAccessibilityAudioComponent::getLocationBasedSubtitlesText() 
 {
 	AActor* parentActor = GetOwner();

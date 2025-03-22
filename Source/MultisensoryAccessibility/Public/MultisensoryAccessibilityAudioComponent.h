@@ -30,6 +30,12 @@ public:
 			Category = "MultisensoryAccessibilitySound")
 		void updateSubtitles();
 
+	UFUNCTION(BlueprintCallable, 
+			meta = (DisplayName = "Change subtitles file", 
+			Keywords = "MultisensoryAccessibility|Sound"),
+			Category = "MultisensoryAccessibilitySound")
+		void changeSubtitlesFile(FString newFile);
+
     UPROPERTY(EditAnywhere, Category = "Output Information")
     	FString ccLocalisedDescriptions = ANSI_TO_TCHAR("positionsCCSubtitlesEN.srt");
 

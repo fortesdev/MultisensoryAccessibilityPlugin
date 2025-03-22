@@ -249,7 +249,7 @@ TArray<float> UMultisensoryAccessibilityColorBlindness::getCVDTable(
 	float strength)
 {   
 	const int32 size = 9; // 3 times 3 RGB values
-	const int32 maxStrength = 10;
+	const int32 maxStrength = 9;
 	int32 intStrength = static_cast<int32>(strength);
 	float weigth = 0.0;
 	if (intStrength > maxStrength) {
@@ -274,6 +274,7 @@ TArray<float> UMultisensoryAccessibilityColorBlindness::getCVDTable(
 				return table;
 				break;
 			case EAffectedColorCone::Red:
+			UE_LOG(LogTemp, Log, TEXT("We got strength: %f intStrength %i weigth %f i:%i"), strength, intStrength, weigth, i);
 					table.Add(UMultisensoryAccessibilityColorBlindness::interpolate(
 						ProtanopeCVDTable[i], 
 						ProtanopeCVDTable[i+size], 
