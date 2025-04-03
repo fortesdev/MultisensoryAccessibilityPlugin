@@ -31,10 +31,12 @@ void UMultisensoryAccessibilityTextBlock::UpdateSubtitleText(const FText& Subtit
 		return; // Nothing set or played yet, or received equal to original. We skip subtitle updates
 	}
 
-	if (!bOriginalTextSet) 
+	if (!bOriginalTextSet && SubtitleText.ToString().Len() != 0) 
 	{	
 		bOriginalTextSet = true;
 		originalTextValue = SubtitleText;
+	} else if (!bOriginalTextSet) {
+		return; // avoid subtitle without location info, initially
 	}
 	
 	FText finalSubtitle = SubtitleText.ToString().Len() == 0 ? FText::GetEmpty() :

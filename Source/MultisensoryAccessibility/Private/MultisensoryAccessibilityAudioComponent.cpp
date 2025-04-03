@@ -51,37 +51,50 @@ void UMultisensoryAccessibilityAudioComponent::changeSubtitlesFile(FString newFi
 	preloadConstants();
 }
 
+FText UMultisensoryAccessibilityAudioComponent::getLocationText(FVector posVector, FVector playerLocation, FVector actorLocation) 
+{
+	FText locationText = FText::GetEmpty();
+	int xPos = relativePos(posVector.X);
+	int yPos = relativePos(posVector.Y);
+	int zPos = relativePos(posVector.Z);
+	int direction = deltaPosChange(playerLocation, actorLocation);
+	FString emptyString = ANSI_TO_TCHAR("");
+	FString commaString = ANSI_TO_TCHAR(",");
+	FString directionString = direction > 0 ? ccMovingAway : direction < 0 ? ccGettingCloser : emptyString;
+	FString zString = zPos > 0 ? ccAbove : zPos < 0 ? ccBellow : emptyString;
+	FString yString = yPos > 0 ? ccFromTheRight : yPos < 0 ? ccFromTheLeft : emptyString;
+	FString xString = xPos > 0 ? ccAhead : xPos < 0 ? ccBehind : emptyString;
+	// Format: "Actor_Subtitle {getting closer/moving away} {ahead/behind}, {bellow/above} {from the right/left}" 		
+	if (direction != 0) 
+	{
+		locationText = FText::FromString(directionString);
+	}
+	locationText = appendFormatted(locationText, FText::FromString(xString), FText::FromString(emptyString));
+	locationText = appendFormatted(locationText, FText::FromString(zString), FText::FromString(commaString));
+	locationText = appendFormatted(locationText, FText::FromString(yString), FText::FromString(emptyString));
+	return locationText;
+}
+
 FText UMultisensoryAccessibilityAudioComponent::getLocationBasedSubtitlesText() 
 {
 	AActor* parentActor = GetOwner();
 	APlayerController* player = GetWorld()->GetFirstPlayerController();
-	FVector posVector;
+	FVector posVector, actorLocation;
 	FText locationText = FText::GetEmpty();
+	FVector playerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 	if (parentActor && player)
 	{
-		FVector actorLocation = parentActor->GetActorLocation();
+		actorLocation = parentActor->GetActorLocation();
 		// We should not compare the inverse transform position between actor and player, but against the player's camera, 
 		// as its vector will change the relative positions
-		APlayerCameraManager* PlayerCamera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
-		posVector = PlayerCamera->GetActorTransform().InverseTransformPosition(actorLocation);
-		int xPos = relativePos(posVector.X);
-		int yPos = relativePos(posVector.Y);
-		int zPos = relativePos(posVector.Z);
-		int direction = deltaPosChange(actorLocation);
-		FString emptyString = ANSI_TO_TCHAR("");
-		FString commaString = ANSI_TO_TCHAR(",");
-		FString directionString = direction > 0 ? ccMovingAway : direction < 0 ? ccGettingCloser : emptyString;
-		FString zString = zPos > 0 ? ccAbove : zPos < 0 ? ccBellow : emptyString;
-		FString yString = yPos > 0 ? ccFromTheRight : yPos < 0 ? ccFromTheLeft : emptyString;
-		FString xString = xPos > 0 ? ccAhead : xPos < 0 ? ccBehind : emptyString;
-		// Format: "Actor_Subtitle {getting closer/moving away} {ahead/behind}, {bellow/above} {from the right/left}" 		
-		if (direction != 0) 
-		{
-			locationText = FText::FromString(directionString);
+		if (isObservedInFirstPerson) {
+			APlayerCameraManager* PlayerCamera = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
+			posVector = PlayerCamera->GetActorTransform().InverseTransformPosition(actorLocation);
+		} else {
+			APawn* Pawn = GetWorld()->GetFirstPlayerController()->AcknowledgedPawn;
+			posVector = Pawn->GetActorTransform().InverseTransformPosition(actorLocation);
 		}
-		locationText = appendFormatted(locationText, FText::FromString(xString), FText::FromString(emptyString));
-		locationText = appendFormatted(locationText, FText::FromString(zString), FText::FromString(commaString));
-		locationText = appendFormatted(locationText, FText::FromString(yString), FText::FromString(emptyString));	
+		locationText = getLocationText(posVector, playerLocation, actorLocation);	
 		//UE_LOG(LogClass, Log, TEXT("posVector: %s, %d:%d:%d(%d) => %s"), *posVector.ToString(), xPos, yPos, zPos, direction, *locationText.ToString());
 		previousPosVector = posVector;
 	}
@@ -103,10 +116,9 @@ int16 UMultisensoryAccessibilityAudioComponent::relativePos(int16 coord)
 		   coord < -kDistanceThreshold ? -1 : 0;
 }
 
-int16 UMultisensoryAccessibilityAudioComponent::deltaPosChange(FVector actorLocation) 
+int16 UMultisensoryAccessibilityAudioComponent::deltaPosChange(FVector playerLocation, FVector emiterLocation) 
 {
-	FVector playerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
-	int16 newDistance = FVector::Dist(playerLocation, actorLocation);
+	int16 newDistance = FVector::Dist(playerLocation, emiterLocation);
 	int16 difference = newDistance - previousDistance;
 	previousDistance = newDistance;
 	return relativePos(difference);
@@ -155,7 +167,7 @@ void UMultisensoryAccessibilityAudioComponent::preloadConstants()
 			}
 			if (!(*It).IsEmpty()) {
 				ccBellow = *It;
-				UE_LOG(LogTemp, Warning, TEXT("UMultisensoryAccessibilityAudioComponent: All cc descriptions successfully loaded"));
+				UE_LOG(LogTemp, Log, TEXT("UMultisensoryAccessibilityAudioComponent: All cc descriptions successfully loaded"));
 			}
 	     } else {
 	        UE_LOG(LogTemp, Warning, TEXT("UMultisensoryAccessibilityAudioComponent: Did not load text from file"));

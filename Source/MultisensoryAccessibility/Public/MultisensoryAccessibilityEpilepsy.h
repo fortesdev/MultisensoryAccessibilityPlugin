@@ -39,9 +39,9 @@ protected:
     // Create the image in texture
     void FillTexture(float fps);
 
-    int32 ColourDistance(FColor color1, FColor color2);
+    static int32 ColourDistance(FColor color1, FColor color2);
 
-    int32 LuminanceDistance(FColor color1, FColor color2);
+    static int32 LuminanceDistance(FColor color1, FColor color2);
 
     // Textures need to be power of 2
     uint32_t internResolution;
@@ -94,4 +94,6 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Output Information", meta = (ClampMin = "0", ClampMax = "100", UIMin = "0", UIMax = "100"))
         int32 maxLuminanceDistance;
+
+    friend class FEpilepsyTest;
 };

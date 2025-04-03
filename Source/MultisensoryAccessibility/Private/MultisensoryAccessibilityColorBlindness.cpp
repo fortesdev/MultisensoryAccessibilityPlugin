@@ -25,6 +25,57 @@ See the License for the specific language governing permissions and limitations 
 
 #define LOCTEXT_NAMESPACE "FMultisensoryAccessibilityModule"
 
+FString UMultisensoryAccessibilityColorBlindness::GetLUTTexturePath(
+	EAffectedColorCone Cone,
+	EColorBlindMode mode) 
+{
+	FString texturePath = "/Script/Engine.Texture2D'/MultisensoryAccessibility/LUTs/";
+	FString textureFilename = "";
+	switch (Cone)
+	{
+		case EAffectedColorCone::None:
+			// UE_LOG(LogTemp, Warning, TEXT("Cone NONE"));
+			return textureFilename;
+			break;
+		case EAffectedColorCone::Red:
+		    textureFilename += "protanope";
+		    break; 
+		case EAffectedColorCone::Green:
+		    textureFilename += "deuteranope";
+		    break;
+    	case EAffectedColorCone::Blue:
+		    textureFilename += "tritanope";
+			break;
+		default:
+			return textureFilename;
+		   	break;
+		break; 
+	}
+
+	switch (mode)
+	{
+		case EColorBlindMode::Simulate:
+		    textureFilename += "_simulate_lut";
+		    break; 
+		case EColorBlindMode::Correct:
+		    textureFilename += "_correct_lut";
+		    break;
+    	case EColorBlindMode::SimulateCorrected:
+		    textureFilename += "_daltonise_lut";
+			break;
+		default:
+			return textureFilename;
+		   	break;
+		break; 
+	}
+
+	texturePath += textureFilename;
+	texturePath += ".";
+	texturePath += textureFilename;
+	texturePath += "'";
+	return texturePath;
+}
+
 float UMultisensoryAccessibilityColorBlindness::ColorBlindnessLUTHandling(
 		EAffectedColorCone Cone, 
 		AMultisensoryAccessibilityPPVolume* Volume,
@@ -57,52 +108,28 @@ float UMultisensoryAccessibilityColorBlindness::ColorBlindnessLUTHandling(
 		}
 	}
 
-	FString texturePath = "/Script/Engine.Texture2D'/MultisensoryAccessibility/LUTs/";
-	FString textureFilename = "";
+	FString texturePath = GetLUTTexturePath(Cone, mode);
 	switch (Cone)
 	{
 		case EAffectedColorCone::None:
-			UE_LOG(LogTemp, Warning, TEXT("Cone NONE"));
 			_postProcessVolume->Settings.bOverride_ColorGradingIntensity = 0; // Deactivate any previous LUT definitionr
 			_postProcessVolume->Settings.bOverride_ColorGradingLUT = 0;
 			return -1;
 			break;
-		case EAffectedColorCone::Red:
-		    textureFilename += "protanope";
-		    break; 
-		case EAffectedColorCone::Green:
-		    textureFilename += "deuteranope";
-		    break;
-    	case EAffectedColorCone::Blue:
-		    textureFilename += "tritanope";
-			break;
 		default:
-			return -1;
 		   	break;
 		break; 
 	}
-
+	
 	switch (mode)
 	{
-		case EColorBlindMode::Simulate:
-		    textureFilename += "_simulate_lut";
+		case EColorBlindMode::Simulate, EColorBlindMode::Correct, EColorBlindMode::SimulateCorrected:
 		    break; 
-		case EColorBlindMode::Correct:
-		    textureFilename += "_correct_lut";
-		    break;
-    	case EColorBlindMode::SimulateCorrected:
-		    textureFilename += "_daltonise_lut";
-			break;
 		default:
 			return -1;
 		   	break;
 		break; 
 	}
-
-	texturePath += textureFilename;
-	texturePath += ".";
-	texturePath += textureFilename;
-	texturePath += "'";
 
 	UE_LOG(LogTemp, Log, TEXT("LUT texture path: %s"), *texturePath);
 	UTexture* ColorBlindTexture = LoadObject<UTexture>(nullptr, *texturePath);

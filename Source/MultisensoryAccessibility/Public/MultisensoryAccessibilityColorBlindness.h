@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and limitations 
 
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "MultisensoryAccessibilityPPVolume.h"
+#include "MultisensoryAccessibilityColorBlindness.generated.h"
 
 UENUM(BlueprintType)
 enum class EAffectedColorCone : uint8
@@ -39,8 +40,10 @@ enum class EColorBlindMode : uint8
 	Correct UMETA(DisplayName="Corrects"),
 };
 
-class UMultisensoryAccessibilityColorBlindness
+UCLASS()
+class UMultisensoryAccessibilityColorBlindness: public UObject
 {
+	GENERATED_BODY()
 
 public:
 
@@ -71,6 +74,11 @@ private:
 	static FLinearColor getDALTColor(
 		int32 row,
 		EAffectedColorCone Cone);
+	static FString GetLUTTexturePath(
+		EAffectedColorCone Cone,
+		EColorBlindMode mode); 
+
+	friend class FColorTest;
 };
 
 // Values taken from pag 74 in https://lume.ufrgs.br/bitstream/handle/10183/26950/000761444.pdf;jsessionid=EA5AD56D1DC45C8FC9186FACA6B1CBF3?sequence=1

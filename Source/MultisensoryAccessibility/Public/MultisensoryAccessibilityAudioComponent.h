@@ -39,7 +39,14 @@ public:
     UPROPERTY(EditAnywhere, Category = "Output Information")
     	FString ccLocalisedDescriptions = ANSI_TO_TCHAR("positionsCCSubtitlesEN.srt");
 
+    UPROPERTY(EditAnywhere, Category = "Output Information")
+		bool isObservedInFirstPerson = false;
+		
 private:
+	FText getLocationText(FVector posVector, FVector playerLocation, FVector actorLocation);
+	int16 deltaPosChange(FVector playerLocation, FVector emiterLocation);
+	FText appendFormatted(FText currentText, FText newText, FText separator);
+	
 	const int16 kDistanceThreshold = 100;
     int32 startingMeasurementMs = 200;
 	FVector previousPosVector;
@@ -47,8 +54,6 @@ private:
 	FText getLocationBasedSubtitlesText();
 	void preloadConstants();
 	int16 relativePos(int16 coord);
-	int16 deltaPosChange(FVector actorLocation);
-	FText appendFormatted(FText currentText, FText newText, FText separator);
 
 	FString ccGettingCloser = ANSI_TO_TCHAR("getting closer");
 	FString ccMovingAway = ANSI_TO_TCHAR("moving away");
@@ -58,5 +63,8 @@ private:
 	FString ccBehind = ANSI_TO_TCHAR("behind");
 	FString ccAbove = ANSI_TO_TCHAR("above");
 	FString ccBellow = ANSI_TO_TCHAR("bellow");
+
+	friend class FAudioTest;
 };
+
 

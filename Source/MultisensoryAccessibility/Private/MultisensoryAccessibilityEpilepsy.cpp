@@ -28,14 +28,14 @@ inline const uint32_t SmallestPowerOf2_GE_N(uint32_t N)
 }
 
 // Sets default values
-AMultisensoryAccessibilityEpilepsy::AMultisensoryAccessibilityEpilepsy()
-    : resolutionX(32)
-    , resolutionY(32)
-    , field_of_view(90.0f)
-    , maxBlinksPerSecond(3)
-    , screenFragmentToCheck(5)
-    , maxColorDistance(250)
-    , maxLuminanceDistance (75)
+AMultisensoryAccessibilityEpilepsy::AMultisensoryAccessibilityEpilepsy() :
+    resolutionX(32),
+    resolutionY(32),
+    field_of_view(90.0f),
+    maxBlinksPerSecond(3),
+    screenFragmentToCheck(5),
+    maxColorDistance(250),
+    maxLuminanceDistance (75)
 {
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.TickGroup = TG_PostUpdateWork;  // Perform tick after all updates, movement, physics is complete
@@ -138,8 +138,8 @@ void AMultisensoryAccessibilityEpilepsy::FillTexture(float fps)
                int32 luminance = 0;
                for (int i = 0; i < buffer8.Num(); i++) 
                {
-                    int32 distance = ColourDistance(buffer8[i], prevBuffer8[i]);
-                    luminance = LuminanceDistance(buffer8[i], prevBuffer8[i]);
+                    int32 distance = AMultisensoryAccessibilityEpilepsy::ColourDistance(buffer8[i], prevBuffer8[i]);
+                    luminance = AMultisensoryAccessibilityEpilepsy::LuminanceDistance(buffer8[i], prevBuffer8[i]);
                     if (min > luminance) { min = luminance; } 
                     if (max < luminance) { max = luminance; }
                     if (abs(distance) > maxColorDistance || luminance >= maxLuminanceDistance) { blinkPixelCount++; }
