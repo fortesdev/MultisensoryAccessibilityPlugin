@@ -84,7 +84,7 @@ void AMultisensoryAccessibilityEpilepsy::FillTexture(float fps)
 {
     /*
     Explanation of this method:
-         1. Each frame saves one buffer. Each bugger contains the colour of each pixel (default, 32*32=1024 pixels)
+         1. Each frame saves one buffer. Each buffer contains the colour of each pixel (default, 32*32=1024 pixels)
          2. We average between current frame and the previous, and that value is averaged with the next average. Then:
             a) If the difference is bigger than delta (thresold considered as "blinking") for one single pixel, and
             b) The number of pixels exceeds the constant N (the minimum percentage of screen to worry about), then
