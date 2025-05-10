@@ -4,7 +4,7 @@
 
 Video demo:
 
-[![Click to see a video demo](https://img.youtube.com/vi/BThkBb_bR0w/0.jpg)](https://www.youtube.com/watch?v=BThkBb_bR0w)
+[![Click to see a video demo](https://img.youtube.com/vi/Re8e1cGwqGI/0.jpg)](https://www.youtube.com/watch?v=Re8e1cGwqGI)
 
 The goal of this plugin is simple: making accessibility in Unreal projects as cheap and easy as possible. Because everyone wants a wider audience, and helping others to enjoy our creations. For that purpose, I have prepared a set of built-in methods and classes to cover the following access needs:
 
