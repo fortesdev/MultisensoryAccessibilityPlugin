@@ -145,7 +145,7 @@ float UMultisensoryAccessibilityColorBlindness::ColorBlindnessLUTHandling(
 		// Look up table texture to use
 		_postProcessVolume->Settings.ColorGradingLUT = ColorBlindTexture;
 		// Color grading lookup table intensity. 0 = no intensity, 1=full intensity 
-		_postProcessVolume->Settings.ColorGradingIntensity = strength * 0.7; // Strenght affects very drastically LUT, so we reduce to 60% compare to shader result
+		_postProcessVolume->Settings.ColorGradingIntensity = strength * 0.7; // Strength affects very drastically LUT, so we reduce to 60% compare to shader result
 
 	} else 
 	{
