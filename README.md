@@ -6,7 +6,7 @@ Video demo:
 
 [![Click to see a video demo](https://img.youtube.com/vi/Re8e1cGwqGI/0.jpg)](https://www.youtube.com/watch?v=Re8e1cGwqGI)
 
-The goal of this plugin is simple: making accessibility in Unreal projects as cheap and easy as possible. Because everyone wants a wider audience, and helping others to enjoy our creations. For that purpose, I have prepared a set of built-in methods and classes to cover the following access needs:
+The goal of this plugin is simple: making accessibility in Unreal projects as cheap and easy as possible. Because everyone wants a wider audience and helping others to enjoy our creations. For that purpose, I have prepared a set of built-in methods and classes to cover the following access needs:
 
 1. **Hearing aid:**
    - The plugin offers a system for dynamic subtitles, which provides real-time spatial information relative to the player: a 3D sound emitter will concatenate its defined subtitle with "getting closer/moving away", "from the right/left", "ahead/behind" and "above/bellow".
