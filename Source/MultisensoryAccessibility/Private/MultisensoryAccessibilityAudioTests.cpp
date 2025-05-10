@@ -45,19 +45,19 @@ bool FAudioTest::RunTest(const FString& Parameters)
 	// Delta tests
 	TestComponent->previousDistance = 50;
     FVector PlayerLocation(0, 0, 0);
-    FVector EmiterLocation(260, 200, 100);   
-    TestEqual(TEXT("Emiter moves away"), 
-		TestComponent->deltaPosChange(PlayerLocation, EmiterLocation), 
+    FVector emitterLocation(260, 200, 100);   
+    TestEqual(TEXT("emitter moves away"), 
+		TestComponent->deltaPosChange(PlayerLocation, emitterLocation), 
 		1
 	);    
-    EmiterLocation = FVector(40, 0, 0);
-    TestEqual(TEXT("Emiter moves closer"), 
-		TestComponent->deltaPosChange(PlayerLocation, EmiterLocation), 
+    emitterLocation = FVector(40, 0, 0);
+    TestEqual(TEXT("emitter moves closer"), 
+		TestComponent->deltaPosChange(PlayerLocation, emitterLocation), 
 		-1
 	);    
-    EmiterLocation = FVector(41, 0, 0);
+    emitterLocation = FVector(41, 0, 0);
     TestEqual(TEXT("No significant change in position"), 
-		TestComponent->deltaPosChange(PlayerLocation, EmiterLocation), 
+		TestComponent->deltaPosChange(PlayerLocation, emitterLocation), 
 		0
 	);
 

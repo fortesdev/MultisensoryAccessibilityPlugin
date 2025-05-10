@@ -44,7 +44,7 @@ public:
 		
 private:
 	FText getLocationText(FVector posVector, FVector playerLocation, FVector actorLocation);
-	int16 deltaPosChange(FVector playerLocation, FVector emiterLocation);
+	int16 deltaPosChange(FVector playerLocation, FVector emitterLocation);
 	FText appendFormatted(FText currentText, FText newText, FText separator);
 	
 	const int16 kDistanceThreshold = 100;
