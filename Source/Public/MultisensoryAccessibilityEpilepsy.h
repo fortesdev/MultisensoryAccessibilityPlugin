@@ -29,7 +29,10 @@ public:
     
     AMultisensoryAccessibilityEpilepsy();
 
-    UFUNCTION(BlueprintCallable) 
+    UFUNCTION(BlueprintCallable, 
+        meta = (DisplayName = "Callback for photosensitivity alerts", 
+        Keywords = "MultisensoryAccessibility|Epilepsy"),
+        Category = "MultisensoryAccessibilityEpilepsy")
     void CallbackEpilepsy(FEpilepsyDelegate callback, bool blinkDetected); 
 
 protected:

@@ -10,6 +10,9 @@ See the License for the specific language governing permissions and limitations 
 */
 
 #include "MultisensoryAccessibilityEpilepsy.h"
+#include "RHI.h"
+#include "RenderResource.h"
+#include "TextureResource.h"
 
 // define a print message function to print to screen
 #define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)  // display for 1.5 seconds

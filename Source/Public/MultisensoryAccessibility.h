@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and limitations 
 #include "Modules/ModuleManager.h"
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
+#include "Misc/Paths.h"
+#include "ShaderCore.h"
 
 class FMultisensoryAccessibilityModule : public IModuleInterface
 {
