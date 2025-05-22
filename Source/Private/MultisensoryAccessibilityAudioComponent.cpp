@@ -121,9 +121,9 @@ int16 UMultisensoryAccessibilityAudioComponent::relativePos(int16 coord)
 		   coord < -kDistanceThreshold ? -1 : 0;
 }
 
-int16 UMultisensoryAccessibilityAudioComponent::deltaPosChange(FVector playerLocation, FVector emiterLocation) 
+int16 UMultisensoryAccessibilityAudioComponent::deltaPosChange(FVector playerLocation, FVector emitterLocation) 
 {
-	int16 newDistance = FVector::Dist(playerLocation, emiterLocation);
+	int16 newDistance = FVector::Dist(playerLocation, emitterLocation);
 	int16 difference = newDistance - previousDistance;
 	previousDistance = newDistance;
 	return relativePos(difference);
