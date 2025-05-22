@@ -30,7 +30,11 @@ The goal of this plugin is simple: making accessibility in Unreal projects as ch
 3. Copy the Multi-sensory Accessibility plugin folder into "Plugins".
 4. Re-open your project in the Unreal Editor.
 5. If it asks to rebuild the plugin (ie. because "it was built by a different version"), click yes. Depending on your hardware, and if you work in a C++ project already or not, building the plugin may take from a few seconds to minutes.
-6. Go to Editor/Plugins, and check that Multi-sensory Accessibility Plugin is enabled. 
+6. Go to Editor/Plugins, and check that Multi-sensory Accessibility Plugin is enabled.
+
+# Plugin demo
+
+You can find a very simple, ready to use demo project (just to showcase the plugin integration) [here](https://github.com/fortesdev/MultisensoryAccessibilityPluginDemo).
     
 # Dynamic subtitles setup
 
